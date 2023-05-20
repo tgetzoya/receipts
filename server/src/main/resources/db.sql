@@ -14,9 +14,21 @@ CREATE TABLE receipts.draw_account
 INSERT INTO receipts.draw_account (name)
 VALUES ('Test Card');
 
+CREATE TABLE receipts.location
+(
+    id   BIGINT AUTO_INCREMENT,
+    name VARCHAR(255),
+    CONSTRAINT location_pk
+        PRIMARY KEY (id)
+)
+    COMMENT 'Normalized name of purchase location';
+
+INSERT INTO receipts.location (name) VALUES ('Test Location');
+
 CREATE TABLE receipts.receipts
 (
-    id           bigint auto_increment,
+    id           BIGINT                     AUTO_INCREMENT,
+    date         DATE                       NOT NULL,
     location     VARCHAR(255)               NOT NULL,
     subtotal     DECIMAL(5, 2)              NOT NULL,
     sales_tax    DECIMAL(5, 2) DEFAULT 0.00 NOT NULL,
@@ -27,13 +39,20 @@ CREATE TABLE receipts.receipts
     CONSTRAINT receipts_draw_account_id_fk
         FOREIGN KEY (draw_account) REFERENCES draw_account (id)
 )
-    comment 'Receipts';
+    comment 'Table holding the receipt information for each purchase';
 
-INSERT INTO receipts.receipts (location,
-                               subtotal,
-                               sales_tax,
-                               draw_account)
-VALUES ('Test Location',
-        12.34,
-        5.67,
-        (SELECT id FROM receipts.draw_account WHERE name = 'Test Card'));
+CREATE INDEX receipts_date_index ON receipts.receipts (date DESC);
+
+INSERT INTO receipts.receipts (
+    date,
+    location,
+    subtotal,
+    sales_tax,
+    draw_account
+) VALUES (
+     '2023-01-01',
+     (SELECT id FROM receipts.location WHERE name = 'Test Location'),
+     12.34,
+     5.67,
+     (SELECT id FROM receipts.draw_account WHERE name = 'Test Card')
+ );

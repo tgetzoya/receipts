@@ -3,13 +3,20 @@ package net.getzoyan.receipts.models;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity(name = "receipts")
 public class Receipt {
     private @Id
     @GeneratedValue
     Long id;
-    private String location;
+
+    private LocalDate date;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location", referencedColumnName = "id")
+    private Location location;
+
     private BigDecimal subtotal;
 
     @Column(name = "sales_tax")
@@ -20,12 +27,10 @@ public class Receipt {
     @JoinColumn(name = "draw_account", referencedColumnName = "id")
     private DrawAccount drawAccount;
 
-    public Receipt() {
-
-    }
+    public Receipt() {}
 
     public Receipt(Long id,
-                   String location,
+                   Location location,
                    BigDecimal subtotal,
                    BigDecimal salesTax,
                    BigDecimal donation,
@@ -47,11 +52,11 @@ public class Receipt {
         this.id = id;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
