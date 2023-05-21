@@ -1,0 +1,41 @@
+<div id="receipts-table-container">
+  <table id="receipts-table" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.date | date}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="location">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.location.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="subtotal">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subtotal </th>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.subtotal | number: '1.2-2'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="salesTax">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales Tax </th>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.salesTax | number: '1.2-2'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="donation">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Donation </th>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.donation | number: '1.2-2'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="drawAccount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Draw Account </th>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.drawAccount.name}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" ></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

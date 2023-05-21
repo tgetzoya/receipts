@@ -52,6 +52,14 @@ public class Receipt {
         this.id = id;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public Location getLocation() {
         return location;
     }

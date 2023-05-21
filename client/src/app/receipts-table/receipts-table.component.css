@@ -1,0 +1,20 @@
+#receipts-table-container {
+  display: block;
+  width: 50%;
+  margin: 25px auto;
+}
+
+.mat-mdc-row:nth-child(2n-1) {
+  background-color: ghostwhite;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+  background-color: aliceblue;
+}
