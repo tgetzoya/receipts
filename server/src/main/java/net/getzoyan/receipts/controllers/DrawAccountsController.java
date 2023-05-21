@@ -21,8 +21,8 @@ public class DrawAccountsController {
     }
 
     @PostMapping("/draw-account")
-    public DrawAccount newDrawAccount(@RequestBody DrawAccount receipt) {
-        return repository.save(receipt);
+    public DrawAccount newDrawAccount(@RequestBody DrawAccount account) {
+        return repository.save(account);
     }
 
     @GetMapping("/draw-account/{id}")
