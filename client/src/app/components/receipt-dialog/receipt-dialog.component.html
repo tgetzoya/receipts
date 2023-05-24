@@ -1,0 +1,71 @@
+<mat-toolbar>
+  <span>{{title}}</span>
+</mat-toolbar>
+<mat-grid-list cols="1" rowHeight="100px">
+  <mat-grid-tile><mat-form-field>
+    <mat-label>Choose a date</mat-label>
+    <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Location</mat-label>
+      <input
+        type="text"
+        placeholder="Pick one"
+        matInput
+        [formControl]="locationControl"
+        [matAutocomplete]="locationAuto"
+      >
+      <mat-autocomplete autoActiveFirstOption #locationAuto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredLocationOptions | async" [value]="option.name">
+          {{option.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Subtotal</mat-label>
+      <input matInput [formControl]="subtotalControl" placeholder="1.23">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Sales Tax</mat-label>
+      <input matInput [formControl]="salesTaxControl" placeholder="1.23">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Donation</mat-label>
+      <input matInput [formControl]="donationControl" placeholder="1.23">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Draw Account</mat-label>
+      <input
+        type="text"
+        placeholder="Pick one"
+        matInput
+        [formControl]="accountControl"
+        [matAutocomplete]="accountAuto"
+      >
+      <mat-autocomplete autoActiveFirstOption #accountAuto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredDrawAccountOptions | async" [value]="option.name">
+          {{option.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="actions-container">
+      <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
+      <button mat-flat-button color="primary" (click)="save()">Save</button>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

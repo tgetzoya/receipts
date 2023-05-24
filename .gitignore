@@ -51,3 +51,4 @@ Thumbs.db
 # Ignore Gradle build output directory
 build
 /client/.angular/
+/client/dist/client/

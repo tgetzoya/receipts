@@ -8,12 +8,12 @@ import java.time.LocalDate;
 @Entity(name = "receipts")
 public class Receipt {
     private @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     private LocalDate date;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "location", referencedColumnName = "id")
     private Location location;
 
@@ -23,7 +23,7 @@ public class Receipt {
     private BigDecimal salesTax;
     private BigDecimal donation;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "draw_account", referencedColumnName = "id")
     private DrawAccount drawAccount;
 

@@ -1,7 +1,22 @@
 #receipts-table-container {
   display: block;
-  width: 50%;
+  width: 75%;
   margin: 25px auto;
+}
+
+.spacer {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.actions-container {
+  visibility: hidden;
+  justify-content: space-around;
+}
+
+.actions-container>label {
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .mat-mdc-row:nth-child(2n-1) {
@@ -17,4 +32,8 @@
 .mat-mdc-row:hover .mat-mdc-cell {
   border-color: currentColor;
   background-color: aliceblue;
+}
+
+.mat-mdc-row:hover .actions-container {
+  visibility: visible;
 }

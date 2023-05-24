@@ -3,12 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 
-import { Receipt } from "../models/receipt.model";
+import { Location } from "../models/location.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ReceiptsService {
+export class LocationsService {
   baseurl = 'http://localhost:8080';
 
   httpOptions = {
@@ -19,25 +19,9 @@ export class ReceiptsService {
 
   constructor(private http: HttpClient) { }
 
-  getReceipts(): Observable<Receipt[]> {
+  getLocations(): Observable<Location[]> {
     return this.http
-      .get<Receipt[]>(this.baseurl + '/receipts', this.httpOptions)
-      .pipe(retry(1), catchError(this.handleError));
-  }
-
-  saveReceipt(receipt: Receipt): Observable<Receipt> {
-    if (receipt.id) {
-      return this.http.put<Receipt>(this.baseurl + '/receipt/' + receipt.id, receipt, this.httpOptions)
-        .pipe(catchError(this.handleError));
-    } else {
-      return this.http.post<Receipt>(this.baseurl + '/receipt', receipt, this.httpOptions)
-        .pipe(catchError(this.handleError));
-    }
-  }
-
-  deleteReceipt(id: number): Observable<void> {
-    return this.http
-      .delete<void>(this.baseurl + '/receipt/' + id, this.httpOptions)
+      .get<Location[]>(this.baseurl + '/locations')
       .pipe(retry(1), catchError(this.handleError));
   }
 

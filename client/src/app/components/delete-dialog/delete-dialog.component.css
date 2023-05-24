@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  justify-content: center;
+
+}
+
+.label-title {
+  width: 100%;
+  text-align: end;
+  margin-right: 5px;
+  font-weight: bolder;
+}
+
+.label-value {
+  width: 100%;
+  text-align: start;
+  margin-left: 5px;
+}
+
+.actions-container {
+  margin-top: 100px;
+}

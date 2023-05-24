@@ -1,0 +1,51 @@
+<mat-toolbar>
+  <span>Confirm Deletion</span>
+</mat-toolbar>
+<mat-grid-list cols="2" rowHeight="5:1">
+  <mat-grid-tile>
+    <label class="label-title">Date:</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{data.receipt.date}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-title">Location:</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{data.receipt.location.name}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-title">Subtotal:</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{data.receipt.subtotal}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-title">Sales Tax</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{data.receipt.salesTax}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-title">Donation:</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{data.receipt.donation}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-title">Draw Account:</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{data.receipt.drawAccount.name}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+  </mat-grid-tile>
+  <mat-grid-tile>
+  </mat-grid-tile>
+  <mat-grid-tile>
+      <button mat-flat-button color="primary" mat-dialog-close>Cancel</button>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-flat-button color="warn" (click)="delete()">Delete</button>
+  </mat-grid-tile>
+</mat-grid-list>
