@@ -39,4 +39,9 @@ public class LocationController {
                     return repository.save(acc);
                 }).orElseThrow(() -> new NotFoundException(Location.class.getSimpleName(), id));
     }
+
+    @DeleteMapping("/location/{id}")
+    public void removeLocation(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
 }

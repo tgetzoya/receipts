@@ -39,4 +39,9 @@ public class DrawAccountsController {
                     return repository.save(acc);
                 }).orElseThrow(() -> new NotFoundException(DrawAccount.class.getSimpleName(), id));
     }
+
+    @DeleteMapping("/draw-account/{id}")
+    public void removeDrawAccount(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
 }

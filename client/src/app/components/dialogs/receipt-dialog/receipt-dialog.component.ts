@@ -3,13 +3,13 @@ import { FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { map, Observable, startWith } from 'rxjs';
 
-import { DrawAccountsService } from "../../services/draw-accounts.service";
-import { LocationsService } from "../../services/locations.service";
-import { ReceiptsService } from "../../services/receipts.service";
+import { DrawAccountsService } from "../../../services/draw-accounts.service";
+import { LocationsService } from "../../../services/locations.service";
+import { ReceiptsService } from "../../../services/receipts.service";
 
-import { DrawAccount } from "../../models/draw-account.model";
-import { Location } from "../../models/location.model";
-import { Receipt } from "../../models/receipt.model";
+import { DrawAccount } from "../../../models/draw-account.model";
+import { Location } from "../../../models/location.model";
+import { Receipt } from "../../../models/receipt.model";
 
 @Component({
   selector: 'app-receipt-dialog',
@@ -53,7 +53,7 @@ export class ReceiptDialogComponent implements OnInit {
       this.title = "Create Receipt";
     }
 
-    this.drawAccountsService.getDrawAccount().subscribe(res => {
+    this.drawAccountsService.getDrawAccounts().subscribe(res => {
       this.drawAccounts = res.sort((a: DrawAccount,b: DrawAccount) => {return a.name.localeCompare(b.name)});
 
       this.filteredDrawAccountOptions = this.accountControl.valueChanges.pipe(
@@ -90,7 +90,28 @@ export class ReceiptDialogComponent implements OnInit {
     }
   }
 
+  private markAllAsTouched(): void {
+    this.accountControl.markAsTouched();
+    this.dateControl.markAsTouched();
+    this.donationControl.markAsTouched();
+    this.salesTaxControl.markAsTouched();
+    this.subtotalControl.markAsTouched();
+    this.locationControl.markAsTouched();
+  }
+
   public save(): void {
+    if (
+      this.accountControl.invalid ||
+      this.dateControl.invalid ||
+      this.donationControl.invalid ||
+      this.locationControl.invalid ||
+      this.salesTaxControl.invalid ||
+      this.subtotalControl.invalid
+    ) {
+      this.markAllAsTouched();
+      return;
+    }
+
     let receipt: Receipt = new Receipt();
 
     if (!this.data.duplicate && this.data.receipt) {

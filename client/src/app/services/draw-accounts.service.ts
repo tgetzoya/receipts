@@ -19,9 +19,15 @@ export class DrawAccountsService {
 
   constructor(private http: HttpClient) { }
 
-  getDrawAccount(): Observable<DrawAccount[]> {
+  getDrawAccounts(): Observable<DrawAccount[]> {
     return this.http
       .get<DrawAccount[]>(this.baseurl + '/draw-accounts')
+      .pipe(retry(1), catchError(this.handleError));
+  }
+
+  deleteDrawAccount(id: number): Observable<void> {
+    return this.http
+      .delete<void>(this.baseurl + '/draw-account/' + id )
       .pipe(retry(1), catchError(this.handleError));
   }
 

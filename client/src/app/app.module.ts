@@ -14,27 +14,35 @@ import { MatGridListModule } from "@angular/material/grid-list";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatNativeDateModule } from "@angular/material/core";
-import { MatTableModule } from '@angular/material/table'
 import { MatSelectModule } from "@angular/material/select";
 import { MatSortModule } from "@angular/material/sort";
+import { MatTableModule } from '@angular/material/table'
+import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 
 import { AppComponent } from './app.component';
-import { ReceiptsTableComponent } from './components/receipts-table/receipts-table.component';
+import { ReceiptsTableComponent } from './components/tables/receipts-table/receipts-table.component';
+import { ReceiptDialogComponent } from './components/dialogs/receipt-dialog/receipt-dialog.component';
 
-import { ReceiptDialogComponent } from './components/receipt-dialog/receipt-dialog.component';
-import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
+import { DeleteItemDialogComponent } from "./components/dialogs/delete-item-dialog/delete-item-dialog.component";
+import { DeleteReceiptDialogComponent } from './components/dialogs/delete-receipt-dialog/delete-receipt-dialog.component';
 
 import { DrawAccountsService } from "./services/draw-accounts.service";
 import { LocationsService } from "./services/locations.service";
 import { ReceiptsService } from "./services/receipts.service";
 
+import { DrawAccountsTableComponent } from "./components/tables/draw-accounts-table/draw-accounts-table.component";
+import { LocationsTableComponent } from './components/tables/locations-table/locations-table.component';
+
 @NgModule({
   declarations: [
     AppComponent,
-    ReceiptsTableComponent,
+    DeleteItemDialogComponent,
+    DeleteReceiptDialogComponent,
+    DrawAccountsTableComponent,
+    LocationsTableComponent,
     ReceiptDialogComponent,
-    DeleteDialogComponent
+    ReceiptsTableComponent
   ],
   imports: [
     BrowserModule,
@@ -50,9 +58,10 @@ import { ReceiptsService } from "./services/receipts.service";
     MatIconModule,
     MatInputModule,
     MatNativeDateModule,
-    MatTableModule,
     MatSelectModule,
     MatSortModule,
+    MatTableModule,
+    MatTabsModule,
     MatToolbarModule,
     ReactiveFormsModule
   ],

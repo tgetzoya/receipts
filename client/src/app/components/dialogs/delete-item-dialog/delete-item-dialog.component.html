@@ -1,0 +1,23 @@
+<mat-toolbar>
+  <span>Confirm Item Deletion</span>
+</mat-toolbar>
+<mat-grid-list cols="2" rowHeight="5:1">
+  <mat-grid-tile>
+    <label class="label-title">Type:</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{itemType}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-title">Name:</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <label class="label-value">{{itemName}}</label>
+  </mat-grid-tile>
+  <mat-grid-tile>
+      <button mat-flat-button color="primary" mat-dialog-close>Cancel</button>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-flat-button color="warn" [mat-dialog-close]="true">Delete</button>
+  </mat-grid-tile>
+</mat-grid-list>

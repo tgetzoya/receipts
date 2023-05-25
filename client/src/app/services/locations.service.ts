@@ -25,6 +25,12 @@ export class LocationsService {
       .pipe(retry(1), catchError(this.handleError));
   }
 
+  deleteLocation(id: number): Observable<void> {
+    return this.http
+      .delete<void>(this.baseurl + '/location/' + id)
+      .pipe(retry(1), catchError(this.handleError));
+  }
+
   handleError(error: any) {
     let errorMessage = '';
 

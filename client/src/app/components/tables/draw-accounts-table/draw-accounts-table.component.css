@@ -1,0 +1,38 @@
+#draw-account-table-container {
+  display: block;
+  width: 50%;
+  margin: 25px auto;
+}
+
+.top-item {
+  width: 100%;
+}
+
+.actions-container {
+  visibility: hidden;
+  justify-content: space-around;
+}
+
+.actions-container>label {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.mat-mdc-row:nth-child(2n-1) {
+  background-color: ghostwhite;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+  background-color: aliceblue;
+}
+
+.mat-mdc-row:hover .actions-container {
+  visibility: visible;
+}

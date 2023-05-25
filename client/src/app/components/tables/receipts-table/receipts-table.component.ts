@@ -1,20 +1,20 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 
-import { DeleteDialogComponent } from "../delete-dialog/delete-dialog.component";
-import { Receipt } from "../../models/receipt.model";
-import { ReceiptDialogComponent } from "../receipt-dialog/receipt-dialog.component";
-import { ReceiptsService } from "../../services/receipts.service";
+import { DeleteReceiptDialogComponent } from "../../dialogs/delete-receipt-dialog/delete-receipt-dialog.component";
+import { Receipt } from "../../../models/receipt.model";
+import { ReceiptDialogComponent } from "../../dialogs/receipt-dialog/receipt-dialog.component";
+import { ReceiptsService } from "../../../services/receipts.service";
 
 @Component({
   selector: 'app-receipts-table',
   templateUrl: './receipts-table.component.html',
   styleUrls: ['./receipts-table.component.css']
 })
-export class ReceiptsTableComponent {
+export class ReceiptsTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   displayedColumns: string[] = [
@@ -41,7 +41,7 @@ export class ReceiptsTableComponent {
   }
 
   openDeleteDialog(receipt: Receipt | null) {
-    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+    const dialogRef = this.dialog.open(DeleteReceiptDialogComponent, {
       data: {receipt},
       height: '400px',
       width: '375px'
