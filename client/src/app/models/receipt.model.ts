@@ -2,11 +2,11 @@ import {Location} from "./location.model";
 import {DrawAccount} from "./draw-account.model";
 
 export class Receipt {
-  id!: number;
-  date!: Date | null;
-  location!: Location | undefined;
-  subtotal!: string | null;
-  salesTax!: string | null;
-  donation!: string | null;
-  drawAccount!: DrawAccount | undefined;
+  id?: number;
+  date?: Date;
+  location?: Location;
+  subtotal?: string;
+  salesTax?: string;
+  donation?: string;
+  drawAccount?: DrawAccount;
 }

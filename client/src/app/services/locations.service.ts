@@ -19,15 +19,27 @@ export class LocationsService {
 
   constructor(private http: HttpClient) { }
 
+  createOrUpdateLocation(location: Location) : Observable<Location> {
+    if (location.id) {
+      return this.http
+        .put<Location>(this.baseurl + '/location/' + location.id, location, this.httpOptions)
+        .pipe(catchError(this.handleError));
+    } else {
+      return this.http
+        .post<Location>(this.baseurl + '/location', location, this.httpOptions)
+        .pipe(catchError(this.handleError));
+    }
+  }
+
   getLocations(): Observable<Location[]> {
     return this.http
-      .get<Location[]>(this.baseurl + '/locations')
+      .get<Location[]>(this.baseurl + '/locations', this.httpOptions)
       .pipe(retry(1), catchError(this.handleError));
   }
 
   deleteLocation(id: number): Observable<void> {
     return this.http
-      .delete<void>(this.baseurl + '/location/' + id)
+      .delete<void>(this.baseurl + '/location/' + id, this.httpOptions)
       .pipe(retry(1), catchError(this.handleError));
   }
 

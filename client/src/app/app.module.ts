@@ -32,14 +32,19 @@ import { LocationsService } from "./services/locations.service";
 import { ReceiptsService } from "./services/receipts.service";
 
 import { DrawAccountsTableComponent } from "./components/tables/draw-accounts-table/draw-accounts-table.component";
+
+import { LocationDialogComponent } from './components/dialogs/location-dialog/location-dialog.component';
 import { LocationsTableComponent } from './components/tables/locations-table/locations-table.component';
+import { DrawAccountDialogComponent } from './components/dialogs/draw-account-dialog/draw-account-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DeleteItemDialogComponent,
     DeleteReceiptDialogComponent,
+    DrawAccountDialogComponent,
     DrawAccountsTableComponent,
+    LocationDialogComponent,
     LocationsTableComponent,
     ReceiptDialogComponent,
     ReceiptsTableComponent

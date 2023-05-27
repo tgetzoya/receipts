@@ -19,6 +19,18 @@ export class DrawAccountsService {
 
   constructor(private http: HttpClient) { }
 
+  createOrUpdateDrawAccount(drawAccount: DrawAccount) : Observable<DrawAccount> {
+    if (drawAccount.id) {
+      return this.http
+        .put<DrawAccount>(this.baseurl + '/draw-account/' + drawAccount.id, drawAccount, this.httpOptions)
+        .pipe(catchError(this.handleError));
+    } else {
+      return this.http
+        .post<DrawAccount>(this.baseurl + '/draw-account', drawAccount, this.httpOptions)
+        .pipe(catchError(this.handleError));
+    }
+  }
+
   getDrawAccounts(): Observable<DrawAccount[]> {
     return this.http
       .get<DrawAccount[]>(this.baseurl + '/draw-accounts')

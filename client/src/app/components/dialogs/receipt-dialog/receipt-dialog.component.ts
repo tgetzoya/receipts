@@ -5,7 +5,6 @@ import { map, Observable, startWith } from 'rxjs';
 
 import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { LocationsService } from "../../../services/locations.service";
-import { ReceiptsService } from "../../../services/receipts.service";
 
 import { DrawAccount } from "../../../models/draw-account.model";
 import { Location } from "../../../models/location.model";
@@ -28,14 +27,13 @@ export class ReceiptDialogComponent implements OnInit {
   filteredLocationOptions!: Observable<Location[]>;
   title!: string;
 
-  drawAccounts!: DrawAccount[];
-  locations!: Location[];
+  drawAccounts?: DrawAccount[];
+  locations?: Location[];
 
   constructor(
     public dialogRef: MatDialogRef<ReceiptDialogComponent>,
     public drawAccountsService: DrawAccountsService,
     public locationsService: LocationsService,
-    public receiptsService: ReceiptsService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
@@ -54,7 +52,7 @@ export class ReceiptDialogComponent implements OnInit {
     }
 
     this.drawAccountsService.getDrawAccounts().subscribe(res => {
-      this.drawAccounts = res.sort((a: DrawAccount,b: DrawAccount) => {return a.name.localeCompare(b.name)});
+      this.drawAccounts = res.sort((a: DrawAccount,b: DrawAccount) => {return a.name!.localeCompare(b.name!)});
 
       this.filteredDrawAccountOptions = this.accountControl.valueChanges.pipe(
         startWith(''),
@@ -63,7 +61,7 @@ export class ReceiptDialogComponent implements OnInit {
     });
 
     this.locationsService.getLocations().subscribe(res => {
-      this.locations = res.sort((a: Location,b: Location) => {return a.name.localeCompare(b.name)});
+      this.locations = res.sort((a: Location,b: Location) => {return a.name!.localeCompare(b.name!)});
 
       this.filteredLocationOptions = this.locationControl.valueChanges.pipe(
         startWith(''),
@@ -75,7 +73,7 @@ export class ReceiptDialogComponent implements OnInit {
   private filterDrawAccounts(value: string): Location[] {
     if (this.drawAccounts && this.drawAccounts.length > 0) {
       const filterValue = value.toLowerCase();
-      return this.drawAccounts.filter(account => account.name.toLowerCase().includes(filterValue));
+      return this.drawAccounts.filter(account => account.name!.toLowerCase().includes(filterValue));
     } else {
       return [];
     }
@@ -84,7 +82,7 @@ export class ReceiptDialogComponent implements OnInit {
   private filterLocations(value: string): Location[] {
     if (this.locations && this.locations.length > 0) {
       const filterValue = value.toLowerCase();
-      return this.locations.filter(location => location.name.toLowerCase().includes(filterValue));
+      return this.locations.filter(location => location.name!.toLowerCase().includes(filterValue));
     } else {
       return [];
     }
@@ -120,14 +118,13 @@ export class ReceiptDialogComponent implements OnInit {
 
     let date: string | null = this.dateControl.value;
     receipt.date = new Date(date ? date : Date.now());
-    receipt.location = this.locations.find(l => l.name === this.locationControl.value);
-    receipt.donation = this.donationControl.value;
-    receipt.salesTax = this.salesTaxControl.value;
-    receipt.subtotal = this.subtotalControl.value;
-    receipt.drawAccount = this.drawAccounts.find(a => a.name === this.accountControl.value);
+    receipt.location = this.locations!.find(l => l.name === this.locationControl.value);
+    receipt.donation = this.donationControl.value!;
+    receipt.salesTax = this.salesTaxControl.value!;
+    receipt.subtotal = this.subtotalControl.value!;
+    receipt.drawAccount = this.drawAccounts!.find(a => a.name === this.accountControl.value);
 
-    this.receiptsService.saveReceipt(receipt).subscribe(resp => {
-      this.dialogRef.close(resp);
-    })
+
+    this.dialogRef.close(receipt);
   }
 }

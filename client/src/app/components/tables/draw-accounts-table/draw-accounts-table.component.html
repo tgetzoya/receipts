@@ -15,7 +15,7 @@
       </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile>
-        <button class="top-item" mat-flat-button color="primary" (click)="openLocationDialog()">
+        <button class="top-item" mat-flat-button color="primary" (click)="openDrawAccountDialog()">
           <mat-icon>add_circle</mat-icon>
           Add New Draw Account
         </button>
@@ -36,6 +36,8 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
       <td mat-cell *matCellDef="let account">
         <div class="actions-container">
+          <label (click)="openDrawAccountDialog(account)">Edit</label>
+          <label class="spacer">|</label>
           <label (click)="openDeleteDialog(account)">Delete</label>
         </div>
       </td>

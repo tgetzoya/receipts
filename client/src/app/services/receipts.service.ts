@@ -25,7 +25,7 @@ export class ReceiptsService {
       .pipe(retry(1), catchError(this.handleError));
   }
 
-  saveReceipt(receipt: Receipt): Observable<Receipt> {
+  createOrUpdateReceipt(receipt: Receipt): Observable<Receipt> {
     if (receipt.id) {
       return this.http.put<Receipt>(this.baseurl + '/receipt/' + receipt.id, receipt, this.httpOptions)
         .pipe(catchError(this.handleError));

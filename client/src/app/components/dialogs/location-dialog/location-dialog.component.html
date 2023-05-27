@@ -1,0 +1,25 @@
+<mat-toolbar>
+  <span>Create New Location</span>
+</mat-toolbar>
+<mat-grid-list cols="1" rowHeight="100px">
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Name</mat-label>
+      <input
+        type="text"
+        placeholder="Ex. Bob's Discount Taco Shack"
+        matInput
+        [formControl]="nameControl"
+      >
+      <mat-error *ngIf="nameControl.invalid && nameControl.errors!['exists']">
+        Location with name '{{nameControl.errors!['exists']}}' already exists.
+      </mat-error>
+    </mat-form-field>
+  </mat-grid-tile>
+    <mat-grid-tile>
+    <div class="actions-container">
+      <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
+      <button mat-flat-button color="primary" (click)="createOrUpdateLocation()">Save</button>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

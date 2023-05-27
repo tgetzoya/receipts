@@ -8,6 +8,7 @@ import { DeleteItemDialogComponent } from "../../dialogs/delete-item-dialog/dele
 
 import { DrawAccount } from "../../../models/draw-account.model";
 import { FormControl } from "@angular/forms";
+import { DrawAccountDialogComponent } from "../../dialogs/draw-account-dialog/draw-account-dialog.component";
 
 @Component({
   selector: 'app-draw-accounts-table',
@@ -46,7 +47,7 @@ export class DrawAccountsTableComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(resp => {
       if (resp) {
-        this.drawAccountsService.deleteDrawAccount(drawAccount.id).subscribe(resp => {
+        this.drawAccountsService.deleteDrawAccount(drawAccount.id!).subscribe(resp => {
           this.dataSource.data = this.dataSource.data.filter(l => l.id != drawAccount.id);
         });
       }
@@ -57,7 +58,33 @@ export class DrawAccountsTableComponent implements OnInit {
     this.dataSource.filter = this.filterControl.value ? this.filterControl.value.trim().toLowerCase() : '';
   }
 
-  openLocationDialog(): void {
+  openDrawAccountDialog(editDrawAccount?: DrawAccount): void {
+    const dialogRef = this.dialog.open(DrawAccountDialogComponent, {
+      data: {drawAccount: editDrawAccount, existingDrawAccounts: this.dataSource.data},
+      height: '275px',
+      width: '400px'
+    });
 
+    dialogRef.afterClosed().subscribe(dialogResponse => {
+      if (dialogResponse) {
+        this.drawAccountsService.createOrUpdateDrawAccount(dialogResponse).subscribe(createOrUpdateResponse => {
+          if (createOrUpdateResponse) {
+            if (editDrawAccount) {
+              console.log('YES?', editDrawAccount)
+              let drawAccount = this.dataSource.data.find(a => a.id == createOrUpdateResponse.id);
+
+              console.log('No?', drawAccount);
+
+              if (drawAccount) {
+                drawAccount.name = createOrUpdateResponse.name;
+              }
+            } else {
+              this.dataSource.data.push(createOrUpdateResponse);
+              this.dataSource._updateChangeSubscription();
+            }
+          }
+        });
+      }
+    });
   }
 }

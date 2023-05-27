@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  justify-content: center;
+
+}
+
+.item {
+  width: 375px;
+}
+
+.actions-container{
+  width: 375px;
+  display: flex;
+  justify-content: space-between;
+}

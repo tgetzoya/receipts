@@ -7,7 +7,7 @@
         <input
           matInput
           [formControl]="filterControl"
-          placeholder="Bob's Discount Furniture"
+          placeholder="Bob's Discount Taco Shack"
           (keyup)="filterTable()"
         >
         <button matSuffix mat-icon-button aria-label="Clear" (click)="filterControl.setValue(''); filterTable();">
@@ -37,6 +37,8 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
       <td mat-cell *matCellDef="let location">
         <div class="actions-container">
+          <label (click)="openLocationDialog(location)">Edit</label>
+          <label class="spacer">|</label>
           <label (click)="openDeleteDialog(location)">Delete</label>
         </div>
       </td>

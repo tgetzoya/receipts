@@ -59,23 +59,23 @@ export class ReceiptsTableComponent implements AfterViewInit {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe(resp => {
-      if (!resp) {
-        return;
-      }
-
-      let receipt = this.dataSource.data.find(r => r.id === resp.id);
-
-      if (receipt) {
-        receipt.date = resp.date;
-        receipt.donation = resp.donation;
-        receipt.drawAccount = resp.drawAccount;
-        receipt.location = resp.location;
-        receipt.salesTax = resp.salesTax;
-        receipt.subtotal = resp.subtotal;
-      } else {
-        this.dataSource.data.push(resp);
-        this.dataSource._updateChangeSubscription();
+    dialogRef.afterClosed().subscribe(dialogResponse => {
+      if (dialogResponse) {
+        this.receiptsService.createOrUpdateReceipt(dialogResponse).subscribe(createOrUpdateResponse => {
+          if (createOrUpdateResponse) {
+            if (receipt) {
+              receipt.date = createOrUpdateResponse.date;
+              receipt.donation = createOrUpdateResponse.donation;
+              receipt.drawAccount = createOrUpdateResponse.drawAccount;
+              receipt.location = createOrUpdateResponse.location;
+              receipt.salesTax = createOrUpdateResponse.salesTax;
+              receipt.subtotal = createOrUpdateResponse.subtotal;
+            } else {
+              this.dataSource.data.push(createOrUpdateResponse);
+              this.dataSource._updateChangeSubscription();
+            }
+          }
+        });
       }
     });
   }

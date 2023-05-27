@@ -36,3 +36,7 @@
 .mat-mdc-row:hover .actions-container {
   visibility: visible;
 }
+
+.actions-container > label {
+  cursor: pointer;
+}

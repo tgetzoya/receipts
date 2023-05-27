@@ -1,4 +1,4 @@
 export class Location {
-  id!: number;
-  name!: string;
+  id?: number;
+  name?: string;
 }
