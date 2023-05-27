@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable, throwError} from "rxjs";
-import {catchError, retry} from "rxjs/operators";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, throwError } from "rxjs";
+import { catchError, retry } from "rxjs/operators";
+
+import { environment } from "../../environment/environment";
 
 import { DrawAccount } from "../models/draw-account.model";
 
@@ -9,8 +11,6 @@ import { DrawAccount } from "../models/draw-account.model";
   providedIn: 'root'
 })
 export class DrawAccountsService {
-  baseurl = 'http://localhost:8080';
-
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -22,24 +22,24 @@ export class DrawAccountsService {
   createOrUpdateDrawAccount(drawAccount: DrawAccount) : Observable<DrawAccount> {
     if (drawAccount.id) {
       return this.http
-        .put<DrawAccount>(this.baseurl + '/draw-account/' + drawAccount.id, drawAccount, this.httpOptions)
+        .put<DrawAccount>(environment.baseURL + '/draw-account/' + drawAccount.id, drawAccount, this.httpOptions)
         .pipe(catchError(this.handleError));
     } else {
       return this.http
-        .post<DrawAccount>(this.baseurl + '/draw-account', drawAccount, this.httpOptions)
+        .post<DrawAccount>(environment.baseURL + '/draw-account', drawAccount, this.httpOptions)
         .pipe(catchError(this.handleError));
     }
   }
 
   getDrawAccounts(): Observable<DrawAccount[]> {
     return this.http
-      .get<DrawAccount[]>(this.baseurl + '/draw-accounts')
+      .get<DrawAccount[]>(environment.baseURL + '/draw-accounts')
       .pipe(retry(1), catchError(this.handleError));
   }
 
   deleteDrawAccount(id: number): Observable<void> {
     return this.http
-      .delete<void>(this.baseurl + '/draw-account/' + id )
+      .delete<void>(environment.baseURL + '/draw-account/' + id )
       .pipe(retry(1), catchError(this.handleError));
   }
 

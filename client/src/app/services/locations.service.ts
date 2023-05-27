@@ -3,13 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 
+import { environment } from "../../environment/environment";
+
 import { Location } from "../models/location.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationsService {
-  baseurl = 'http://localhost:8080';
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -22,24 +23,24 @@ export class LocationsService {
   createOrUpdateLocation(location: Location) : Observable<Location> {
     if (location.id) {
       return this.http
-        .put<Location>(this.baseurl + '/location/' + location.id, location, this.httpOptions)
+        .put<Location>(environment.baseURL + '/location/' + location.id, location, this.httpOptions)
         .pipe(catchError(this.handleError));
     } else {
       return this.http
-        .post<Location>(this.baseurl + '/location', location, this.httpOptions)
+        .post<Location>(environment.baseURL + '/location', location, this.httpOptions)
         .pipe(catchError(this.handleError));
     }
   }
 
   getLocations(): Observable<Location[]> {
     return this.http
-      .get<Location[]>(this.baseurl + '/locations', this.httpOptions)
+      .get<Location[]>(environment.baseURL + '/locations', this.httpOptions)
       .pipe(retry(1), catchError(this.handleError));
   }
 
   deleteLocation(id: number): Observable<void> {
     return this.http
-      .delete<void>(this.baseurl + '/location/' + id, this.httpOptions)
+      .delete<void>(environment.baseURL + '/location/' + id, this.httpOptions)
       .pipe(retry(1), catchError(this.handleError));
   }
 
