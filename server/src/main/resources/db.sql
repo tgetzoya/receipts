@@ -42,6 +42,7 @@ CREATE TABLE receipts.receipts
     comment 'Table holding the receipt information for each purchase';
 
 CREATE INDEX receipts_date_index ON receipts.receipts (date DESC);
+CREATE INDEX receipts_date_location_index ON receipts.receipts (date DESC, location ASC);
 
 INSERT INTO receipts.receipts (
     date,

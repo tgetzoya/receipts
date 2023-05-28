@@ -25,6 +25,12 @@ export class ReceiptsService {
       .pipe(retry(1), catchError(this.handleError));
   }
 
+  getReceiptsByDateAndLocation(date: string, locationId: any): Observable<Receipt[]> {
+    return this.http
+      .get<Receipt[]>(environment.baseURL + '/receipts/date/' + date + '/location/' + locationId, this.httpOptions)
+      .pipe(retry(1), catchError(this.handleError));
+  }
+
   createOrUpdateReceipt(receipt: Receipt): Observable<Receipt> {
     if (receipt.id) {
       return this.http.put<Receipt>(environment.baseURL + '/receipt/' + receipt.id, receipt, this.httpOptions)

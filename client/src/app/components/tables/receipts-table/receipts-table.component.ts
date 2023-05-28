@@ -33,8 +33,8 @@ export class ReceiptsTableComponent implements AfterViewInit {
   constructor( public dialog: MatDialog, public receiptsService: ReceiptsService ) {}
 
   ngAfterViewInit() {
-    this.receiptsService.getReceipts().subscribe((res) => {
-      this.dataSource.data = res;
+    this.receiptsService.getReceipts().subscribe(resp => {
+      this.dataSource.data = resp;
     });
 
     this.dataSource.sort = this.sort;

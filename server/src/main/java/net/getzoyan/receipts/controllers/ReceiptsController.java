@@ -5,7 +5,10 @@ import net.getzoyan.receipts.models.Receipt;
 import net.getzoyan.receipts.repositories.ReceiptsRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static net.getzoyan.receipts.repositories.ReceiptsRepository.Specs.*;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -21,14 +24,34 @@ public class ReceiptsController {
         return repository.findAll();
     }
 
-    @PostMapping("/receipt")
-    public Receipt newReceipt(@RequestBody Receipt receipt) {
-        return repository.save(receipt);
-    }
-
     @GetMapping("/receipt/{id}")
     public Receipt getSingleReceipt(@PathVariable Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException(Receipt.class.getSimpleName(), id));
+    }
+
+    @GetMapping("/receipts/date/{date}")
+    public List<Receipt> getReceiptsOnDate(@PathVariable LocalDate date) {
+        return repository.findAll(byDate(date));
+    }
+
+    @GetMapping("/receipts/location/{locationId}")
+    public List<Receipt> getReceiptsByLocation(@PathVariable Long locationId) {
+        return repository.findAll(byLocation(locationId));
+    }
+
+    @GetMapping("/receipts/date/{date}/location/{locationId}")
+    public List<Receipt> getReceiptsOnDateAndByLocation(@PathVariable LocalDate date, @PathVariable Long locationId) {
+        return repository.findAll(byDate(date).and(byLocation(locationId)));
+    }
+
+    @GetMapping("/receipts/draw-account/{drawAccount}")
+    public List<Receipt> getReceiptsOByDrawAccount(@PathVariable Long drawAccount) {
+        return repository.findAll(byDrawAccount(drawAccount));
+    }
+
+    @PostMapping("/receipt")
+    public Receipt newReceipt(@RequestBody Receipt receipt) {
+        return repository.save(receipt);
     }
 
     @PutMapping("/receipt/{id}")

@@ -4,7 +4,7 @@
 <mat-grid-list cols="1" rowHeight="100px">
   <mat-grid-tile><mat-form-field>
     <mat-label>Choose a date</mat-label>
-    <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+    <input matInput [matDatepicker]="picker" [formControl]="dateControl" (dateInput)="checkDuplicate()">
     <mat-hint>MM/DD/YYYY</mat-hint>
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
@@ -20,7 +20,7 @@
         [formControl]="locationControl"
         [matAutocomplete]="locationAuto"
       >
-      <mat-autocomplete autoActiveFirstOption #locationAuto="matAutocomplete">
+      <mat-autocomplete autoActiveFirstOption #locationAuto="matAutocomplete" (optionSelected)="checkDuplicate()">
         <mat-option *ngFor="let option of filteredLocationOptions | async" [value]="option.name">
           {{option.name}}
         </mat-option>
@@ -61,6 +61,14 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile *ngIf="existingReceipts.length > 0">
+    <div class="item show-existing-div">
+      There exist {{existingReceipts.length}} receipt
+      <span *ngIf="existingReceipts.length > 1">s</span>
+      for {{locationControl.value}} on {{dateControl.value | date: 'yyyy/MM/dd'}}.
+      Please confirm if you have already entered this receipt.
+    </div>
   </mat-grid-tile>
   <mat-grid-tile>
     <div class="actions-container">

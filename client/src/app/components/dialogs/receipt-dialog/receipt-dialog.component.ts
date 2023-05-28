@@ -5,6 +5,7 @@ import { map, Observable, startWith } from 'rxjs';
 
 import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { LocationsService } from "../../../services/locations.service";
+import { ReceiptsService } from "../../../services/receipts.service";
 
 import { DrawAccount } from "../../../models/draw-account.model";
 import { Location } from "../../../models/location.model";
@@ -30,10 +31,13 @@ export class ReceiptDialogComponent implements OnInit {
   drawAccounts?: DrawAccount[];
   locations?: Location[];
 
+  existingReceipts: Receipt[] = [];
+
   constructor(
     public dialogRef: MatDialogRef<ReceiptDialogComponent>,
     public drawAccountsService: DrawAccountsService,
     public locationsService: LocationsService,
+    public receiptsService: ReceiptsService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
@@ -95,6 +99,34 @@ export class ReceiptDialogComponent implements OnInit {
     this.salesTaxControl.markAsTouched();
     this.subtotalControl.markAsTouched();
     this.locationControl.markAsTouched();
+  }
+
+  public checkDuplicate(): void {
+    if (this.dateControl.invalid  || this.locationControl.invalid) {
+      return;
+    }
+
+    let date: Date = new Date(this.dateControl.value!);
+    let location = this.locations!.find(l => l.name === this.locationControl.value!);
+
+    if (!location) {
+      return;
+    }
+
+    this.receiptsService.getReceiptsByDateAndLocation(
+      date.toISOString().slice(0, 10),
+      location?.id
+    ).subscribe(resp => {
+
+      if (resp && resp.length > 0) {
+        this.existingReceipts = resp;
+        this.dialogRef.updateSize("400px", "900px");
+      } else {
+        this.existingReceipts = [];
+        this.dialogRef.updateSize("400px", "800px");
+      }
+
+    });
   }
 
   public save(): void {
