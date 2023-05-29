@@ -5,8 +5,12 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 
 import { DeleteReceiptDialogComponent } from "../../dialogs/delete-receipt-dialog/delete-receipt-dialog.component";
-import { Receipt } from "../../../models/receipt.model";
 import { ReceiptDialogComponent } from "../../dialogs/receipt-dialog/receipt-dialog.component";
+
+import { Receipt } from "../../../models/receipt.model";
+
+import { DrawAccountsService } from "../../../services/draw-accounts.service";
+import { LocationsService } from "../../../services/locations.service";
 import { ReceiptsService } from "../../../services/receipts.service";
 
 @Component({
@@ -30,7 +34,12 @@ export class ReceiptsTableComponent implements AfterViewInit {
 
   dataSource = new MatTableDataSource<Receipt>();
 
-  constructor( public dialog: MatDialog, public receiptsService: ReceiptsService ) {}
+  constructor(
+    public dialog: MatDialog,
+    public drawAccountService: DrawAccountsService,
+    public locationService: LocationsService,
+    public receiptsService: ReceiptsService
+  ) {}
 
   ngAfterViewInit() {
     this.receiptsService.getReceipts().subscribe(resp => {
@@ -59,23 +68,57 @@ export class ReceiptsTableComponent implements AfterViewInit {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe(dialogResponse => {
+    dialogRef.afterClosed().subscribe((dialogResponse: Receipt) => {
       if (dialogResponse) {
-        this.receiptsService.createOrUpdateReceipt(dialogResponse).subscribe(createOrUpdateResponse => {
-          if (createOrUpdateResponse) {
-            if (receipt) {
-              receipt.date = createOrUpdateResponse.date;
-              receipt.donation = createOrUpdateResponse.donation;
-              receipt.drawAccount = createOrUpdateResponse.drawAccount;
-              receipt.location = createOrUpdateResponse.location;
-              receipt.salesTax = createOrUpdateResponse.salesTax;
-              receipt.subtotal = createOrUpdateResponse.subtotal;
-            } else {
-              this.dataSource.data.push(createOrUpdateResponse);
-              this.dataSource._updateChangeSubscription();
-            }
-          }
-        });
+        if (!dialogResponse.location?.id) {
+          this.createNewLocation(dialogResponse);
+        } else if (!dialogResponse.drawAccount?.id) {
+          this.createNewDrawAccount(dialogResponse);
+        } else {
+          this.createOrUpdateReceipt(dialogResponse);
+        }
+      }
+    });
+  }
+
+  private createNewLocation(receipt: Receipt): void {
+    this.locationService.createOrUpdateLocation(receipt.location!).subscribe(resp => {
+      if (resp) {
+        receipt.location = resp;
+
+        if (!receipt.drawAccount?.id) {
+          this.createNewDrawAccount(receipt);
+        } else {
+          this.createOrUpdateReceipt(receipt);
+        }
+      }
+    });
+  }
+
+  private createNewDrawAccount(receipt: Receipt): void {
+    this.drawAccountService.createOrUpdateDrawAccount(receipt.drawAccount!).subscribe(resp => {
+      if (resp) {
+        receipt.drawAccount = resp;
+        this.createOrUpdateReceipt(receipt);
+      }
+    });
+  }
+
+  private createOrUpdateReceipt(receipt: Receipt): void {
+    this.receiptsService.createOrUpdateReceipt(receipt).subscribe(resp => {
+      if (resp) {
+        /* If it has an id here, it already exists. */
+        if (receipt.id) {
+          receipt.date = resp.date;
+          receipt.donation = resp.donation;
+          receipt.drawAccount = resp.drawAccount;
+          receipt.location = resp.location;
+          receipt.salesTax = resp.salesTax;
+          receipt.subtotal = resp.subtotal;
+        } else {
+          this.dataSource.data.push(resp);
+          this.dataSource._updateChangeSubscription();
+        }
       }
     });
   }

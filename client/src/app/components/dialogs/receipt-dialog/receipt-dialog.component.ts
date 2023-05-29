@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import {AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { map, Observable, startWith } from 'rxjs';
 
@@ -11,13 +11,27 @@ import { DrawAccount } from "../../../models/draw-account.model";
 import { Location } from "../../../models/location.model";
 import { Receipt } from "../../../models/receipt.model";
 
+export function notExistsValidator(items: any[]): ValidatorFn {
+  return (control:AbstractControl) : ValidationErrors | null => {
+    const value = control.value;
+
+    if (!value || !items || items.length == 0) {
+      return null;
+    }
+
+    const exists = items.find(l => l.name?.toLowerCase() === value.toLowerCase());
+
+    return exists ? null : {notExists: true};
+  }
+}
+
 @Component({
   selector: 'app-receipt-dialog',
   templateUrl: './receipt-dialog.component.html',
   styleUrls: ['./receipt-dialog.component.css']
 })
 export class ReceiptDialogComponent implements OnInit {
-  accountControl = new FormControl('', Validators.required);
+  drawAccountControl = new FormControl('', Validators.required);
   dateControl = new FormControl('', Validators.required);
   donationControl = new FormControl('', Validators.required);
   locationControl = new FormControl('', Validators.required);
@@ -45,7 +59,7 @@ export class ReceiptDialogComponent implements OnInit {
     if (this.data.receipt) {
       this.title = "Edit Receipt";
 
-      this.accountControl.setValue(this.data.receipt.drawAccount.name);
+      this.drawAccountControl.setValue(this.data.receipt.drawAccount.name);
       this.dateControl.setValue(this.data.duplicate ? '' : this.data.receipt.date);
       this.donationControl.setValue(this.data.receipt.donation);
       this.locationControl.setValue(this.data.receipt.location.name);
@@ -58,7 +72,9 @@ export class ReceiptDialogComponent implements OnInit {
     this.drawAccountsService.getDrawAccounts().subscribe(res => {
       this.drawAccounts = res.sort((a: DrawAccount,b: DrawAccount) => {return a.name!.localeCompare(b.name!)});
 
-      this.filteredDrawAccountOptions = this.accountControl.valueChanges.pipe(
+      this.drawAccountControl.addValidators(notExistsValidator(this.drawAccounts));
+
+      this.filteredDrawAccountOptions = this.drawAccountControl.valueChanges.pipe(
         startWith(''),
         map(value => this.filterDrawAccounts(value || '')),
       );
@@ -66,6 +82,8 @@ export class ReceiptDialogComponent implements OnInit {
 
     this.locationsService.getLocations().subscribe(res => {
       this.locations = res.sort((a: Location,b: Location) => {return a.name!.localeCompare(b.name!)});
+
+      this.locationControl.addValidators(notExistsValidator(this.locations));
 
       this.filteredLocationOptions = this.locationControl.valueChanges.pipe(
         startWith(''),
@@ -93,7 +111,7 @@ export class ReceiptDialogComponent implements OnInit {
   }
 
   private markAllAsTouched(): void {
-    this.accountControl.markAsTouched();
+    this.drawAccountControl.markAsTouched();
     this.dateControl.markAsTouched();
     this.donationControl.markAsTouched();
     this.salesTaxControl.markAsTouched();
@@ -131,10 +149,10 @@ export class ReceiptDialogComponent implements OnInit {
 
   public save(): void {
     if (
-      this.accountControl.invalid ||
+      (this.drawAccountControl.invalid && !this.drawAccountControl.errors!['notExists']) ||
       this.dateControl.invalid ||
       this.donationControl.invalid ||
-      this.locationControl.invalid ||
+      (this.locationControl.invalid && !this.locationControl.errors!['notExists']) ||
       this.salesTaxControl.invalid ||
       this.subtotalControl.invalid
     ) {
@@ -148,13 +166,27 @@ export class ReceiptDialogComponent implements OnInit {
       receipt.id = this.data.receipt.id;
     }
 
+    let location = this.locations!.find(l => l.name === this.locationControl.value);
+
+    if (!location) {
+      location = new Location();
+      location.name = this.locationControl.value!;
+    }
+
+    let drawAccount = this.drawAccounts!.find(a => a.name === this.drawAccountControl.value);
+
+    if (!drawAccount) {
+      drawAccount = new DrawAccount();
+      drawAccount.name = this.drawAccountControl.value!;
+    }
+
     let date: string | null = this.dateControl.value;
     receipt.date = new Date(date ? date : Date.now());
-    receipt.location = this.locations!.find(l => l.name === this.locationControl.value);
+    receipt.location = location;
     receipt.donation = this.donationControl.value!;
     receipt.salesTax = this.salesTaxControl.value!;
     receipt.subtotal = this.subtotalControl.value!;
-    receipt.drawAccount = this.drawAccounts!.find(a => a.name === this.accountControl.value);
+    receipt.drawAccount = drawAccount;
 
 
     this.dialogRef.close(receipt);

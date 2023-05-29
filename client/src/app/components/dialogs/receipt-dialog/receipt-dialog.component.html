@@ -20,6 +20,9 @@
         [formControl]="locationControl"
         [matAutocomplete]="locationAuto"
       >
+      <mat-error *ngIf="locationControl.invalid && locationControl.errors!['notExists']">
+        Location will be created.
+      </mat-error>
       <mat-autocomplete autoActiveFirstOption #locationAuto="matAutocomplete" (optionSelected)="checkDuplicate()">
         <mat-option *ngFor="let option of filteredLocationOptions | async" [value]="option.name">
           {{option.name}}
@@ -52,9 +55,12 @@
         type="text"
         placeholder="Pick one"
         matInput
-        [formControl]="accountControl"
+        [formControl]="drawAccountControl"
         [matAutocomplete]="accountAuto"
       >
+      <mat-error *ngIf="drawAccountControl.invalid && drawAccountControl.errors!['notExists']">
+        Draw Account will be created.
+      </mat-error>
       <mat-autocomplete autoActiveFirstOption #accountAuto="matAutocomplete">
         <mat-option *ngFor="let option of filteredDrawAccountOptions | async" [value]="option.name">
           {{option.name}}
