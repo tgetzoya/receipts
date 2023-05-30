@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { FormControl } from "@angular/forms";
 
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from "@angular/material/table";
+import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
 
 import { DeleteReceiptDialogComponent } from "../../dialogs/delete-receipt-dialog/delete-receipt-dialog.component";
 import { ReceiptDialogComponent } from "../../dialogs/receipt-dialog/receipt-dialog.component";
@@ -20,6 +22,9 @@ import { ReceiptsService } from "../../../services/receipts.service";
 })
 export class ReceiptsTableComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  filterControl = new FormControl('');
 
   displayedColumns: string[] = [
     'id',
@@ -47,6 +52,32 @@ export class ReceiptsTableComponent implements AfterViewInit {
     });
 
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.filterPredicate = this.filterByColumns();
+  }
+
+  private filterByColumns() {
+    let filterFunction =
+      (data: Receipt, filter: string): boolean => {
+        if (filter && (
+          data.id == Number(filter) ||
+          data.subtotal == Number(filter) ||
+          data.salesTax == Number(filter) ||
+          data.donation == Number(filter) ||
+          data.location?.name?.toLowerCase().includes(filter.toLowerCase()) ||
+          data.drawAccount?.name?.toLowerCase().includes(filter.toLowerCase())
+        )) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+    return filterFunction;
+  }
+
+  public filterTable() {
+    this.dataSource.filter = this.filterControl.value ? this.filterControl.value!.trim().toLowerCase() : '';
   }
 
   openDeleteDialog(receipt: Receipt | null) {

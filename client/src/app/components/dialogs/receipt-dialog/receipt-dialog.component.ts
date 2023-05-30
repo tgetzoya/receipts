@@ -183,9 +183,9 @@ export class ReceiptDialogComponent implements OnInit {
     let date: string | null = this.dateControl.value;
     receipt.date = new Date(date ? date : Date.now());
     receipt.location = location;
-    receipt.donation = this.donationControl.value!;
-    receipt.salesTax = this.salesTaxControl.value!;
-    receipt.subtotal = this.subtotalControl.value!;
+    receipt.donation = Number(this.donationControl.value!);
+    receipt.salesTax = Number(this.salesTaxControl.value!);
+    receipt.subtotal = Number(this.subtotalControl.value!);
     receipt.drawAccount = drawAccount;
 
 

@@ -14,6 +14,7 @@ import { MatGridListModule } from "@angular/material/grid-list";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatNativeDateModule } from "@angular/material/core";
+import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from '@angular/material/table'
@@ -63,6 +64,7 @@ import { DrawAccountDialogComponent } from './components/dialogs/draw-account-di
     MatIconModule,
     MatInputModule,
     MatNativeDateModule,
+    MatPaginatorModule,
     MatSelectModule,
     MatSortModule,
     MatTableModule,

@@ -5,8 +5,8 @@ export class Receipt {
   id?: number;
   date?: Date;
   location?: Location;
-  subtotal?: string;
-  salesTax?: string;
-  donation?: string;
+  subtotal?: number;
+  salesTax?: number;
+  donation?: number;
   drawAccount?: DrawAccount;
 }
