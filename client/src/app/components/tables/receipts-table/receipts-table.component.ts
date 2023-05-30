@@ -61,9 +61,9 @@ export class ReceiptsTableComponent implements AfterViewInit {
       (data: Receipt, filter: string): boolean => {
         if (filter && (
           data.id == Number(filter) ||
-          data.subtotal == Number(filter) ||
-          data.salesTax == Number(filter) ||
-          data.donation == Number(filter) ||
+          data.subtotal?.toString().includes(filter) ||
+          data.salesTax?.toString().includes(filter) ||
+          data.donation?.toString().includes(filter) ||
           data.location?.name?.toLowerCase().includes(filter.toLowerCase()) ||
           data.drawAccount?.name?.toLowerCase().includes(filter.toLowerCase())
         )) {
