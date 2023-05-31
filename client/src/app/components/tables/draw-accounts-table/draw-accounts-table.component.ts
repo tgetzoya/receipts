@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
@@ -9,6 +9,7 @@ import { DeleteItemDialogComponent } from "../../dialogs/delete-item-dialog/dele
 
 import { DrawAccount } from "../../../models/draw-account.model";
 import { FormControl } from "@angular/forms";
+
 import { DrawAccountDialogComponent } from "../../dialogs/draw-account-dialog/draw-account-dialog.component";
 
 @Component({
