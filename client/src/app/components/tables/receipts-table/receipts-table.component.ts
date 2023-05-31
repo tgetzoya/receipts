@@ -21,8 +21,8 @@ import { ReceiptsService } from "../../../services/receipts.service";
   styleUrls: ['./receipts-table.component.css']
 })
 export class ReceiptsTableComponent implements AfterViewInit {
-  @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   filterControl = new FormControl('');
 

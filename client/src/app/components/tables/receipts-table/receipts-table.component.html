@@ -1,5 +1,5 @@
 <div id="receipts-table-container">
-  <mat-grid-list class="grid-list" cols="3" rowHeight="7:1">
+  <mat-grid-list cols="3" rowHeight="5:1">
     <mat-grid-tile>
       <mat-form-field class="search-box">
         <mat-label>Filter</mat-label>
@@ -18,7 +18,7 @@
     </mat-grid-tile>
     <mat-grid-tile>
       <div class="button-container">
-        <button class="add-button" mat-fab extended color="primary" (click)="openReceiptDialog(null, false)">
+        <button mat-flat-button color="primary" (click)="openReceiptDialog(null, false)">
           <mat-icon>add_circle</mat-icon>
           Add New Receipt
         </button>
@@ -27,11 +27,12 @@
   </mat-grid-list>
   <table
     id="receipts-table"
-    mat-table [dataSource]="dataSource"
-    matSort
     class="mat-elevation-z8"
+    mat-table
+    matSort
     matSortActive="date"
     matSortDirection="desc"
+    [dataSource]="dataSource"
   >
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>

@@ -4,13 +4,20 @@
   margin: 25px auto;
 }
 
-.top-item {
+.search-box {
+  display: flex;
   width: 100%;
 }
 
 .actions-container {
   visibility: hidden;
   justify-content: space-around;
+}
+
+.button-container{
+  display: flex;
+  justify-content: end;
+  width: 100%;
 }
 
 .actions-container>label {

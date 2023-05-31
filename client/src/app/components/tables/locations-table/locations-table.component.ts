@@ -1,7 +1,8 @@
-import { OnInit, Component, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ViewChild} from '@angular/core';
+import { MatDialog } from "@angular/material/dialog";
+import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { MatDialog } from "@angular/material/dialog";
 
 import { LocationsService } from "../../../services/locations.service";
 import { DeleteItemDialogComponent } from "../../dialogs/delete-item-dialog/delete-item-dialog.component";
@@ -15,8 +16,11 @@ import { LocationDialogComponent } from "../../dialogs/location-dialog/location-
   templateUrl: './locations-table.component.html',
   styleUrls: ['./locations-table.component.css']
 })
-export class LocationsTableComponent implements OnInit {
+export class LocationsTableComponent implements AfterViewInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  filterControl = new FormControl('');
 
   displayedColumns: string[] = [
     'id',
@@ -24,18 +28,17 @@ export class LocationsTableComponent implements OnInit {
     'actions'
   ];
 
-  filterControl = new FormControl('');
-
   dataSource = new MatTableDataSource<Location>();
 
   constructor( public dialog: MatDialog, public locationsService: LocationsService ) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.locationsService.getLocations().subscribe((res) => {
       this.dataSource.data = res;
     });
 
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   openDeleteDialog(location: Location) {

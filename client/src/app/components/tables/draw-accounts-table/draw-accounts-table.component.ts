@@ -1,7 +1,8 @@
-import { OnInit, Component, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ViewChild} from '@angular/core';
+import { MatDialog } from "@angular/material/dialog";
+import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { MatDialog } from "@angular/material/dialog";
 
 import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { DeleteItemDialogComponent } from "../../dialogs/delete-item-dialog/delete-item-dialog.component";
@@ -15,8 +16,11 @@ import { DrawAccountDialogComponent } from "../../dialogs/draw-account-dialog/dr
   templateUrl: './draw-accounts-table.component.html',
   styleUrls: ['./draw-accounts-table.component.css']
 })
-export class DrawAccountsTableComponent implements OnInit {
+export class DrawAccountsTableComponent implements AfterViewInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  filterControl = new FormControl('');
 
   displayedColumns: string[] = [
     'id',
@@ -24,18 +28,20 @@ export class DrawAccountsTableComponent implements OnInit {
     'actions'
   ];
 
-  filterControl = new FormControl('');
-
   dataSource = new MatTableDataSource<DrawAccount>();
 
-  constructor( public dialog: MatDialog, public drawAccountsService: DrawAccountsService ) {}
+  constructor(
+    public dialog: MatDialog,
+    public drawAccountsService: DrawAccountsService
+  ) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.drawAccountsService.getDrawAccounts().subscribe((res) => {
       this.dataSource.data = res;
     });
 
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   openDeleteDialog(drawAccount: DrawAccount) {
