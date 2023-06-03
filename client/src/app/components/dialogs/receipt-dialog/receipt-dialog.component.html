@@ -33,19 +33,19 @@
   <mat-grid-tile>
     <mat-form-field class="item">
       <mat-label>Subtotal</mat-label>
-      <input matInput [formControl]="subtotalControl" placeholder="1.23">
+      <input matInput [formControl]="subtotalControl" placeholder="8.65" (blur)="formatInputForCurrency(subtotalControl)">
     </mat-form-field>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-form-field class="item">
       <mat-label>Sales Tax</mat-label>
-      <input matInput [formControl]="salesTaxControl" placeholder="1.23">
+      <input matInput [formControl]="salesTaxControl" placeholder="7.53" (blur)="formatInputForCurrency(salesTaxControl)">
     </mat-form-field>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-form-field class="item">
       <mat-label>Donation</mat-label>
-      <input matInput [formControl]="donationControl" placeholder="1.23">
+      <input matInput [formControl]="donationControl" placeholder="0.93" (blur)="formatInputForCurrency(donationControl)">
     </mat-form-field>
   </mat-grid-tile>
   <mat-grid-tile>

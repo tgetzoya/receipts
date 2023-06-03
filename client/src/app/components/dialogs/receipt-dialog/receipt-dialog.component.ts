@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import {AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { map, Observable, startWith } from 'rxjs';
+import { CurrencyPipe } from "@angular/common";
 
 import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { LocationsService } from "../../../services/locations.service";
@@ -48,6 +49,7 @@ export class ReceiptDialogComponent implements OnInit {
   existingReceipts: Receipt[] = [];
 
   constructor(
+    public currencyPipe: CurrencyPipe,
     public dialogRef: MatDialogRef<ReceiptDialogComponent>,
     public drawAccountsService: DrawAccountsService,
     public locationsService: LocationsService,
@@ -61,10 +63,10 @@ export class ReceiptDialogComponent implements OnInit {
 
       this.drawAccountControl.setValue(this.data.receipt.drawAccount.name);
       this.dateControl.setValue(this.data.duplicate ? '' : this.data.receipt.date);
-      this.donationControl.setValue(this.data.receipt.donation);
+      this.donationControl.setValue(this.currencyPipe.transform(this.data.receipt.donation));
       this.locationControl.setValue(this.data.receipt.location.name);
-      this.salesTaxControl.setValue(this.data.receipt.salesTax);
-      this.subtotalControl.setValue(this.data.receipt.subtotal);
+      this.salesTaxControl.setValue(this.currencyPipe.transform(this.data.receipt.salesTax));
+      this.subtotalControl.setValue(this.currencyPipe.transform(this.data.receipt.subtotal));
     } else {
       this.title = "Create Receipt";
     }
@@ -108,6 +110,10 @@ export class ReceiptDialogComponent implements OnInit {
     } else {
       return [];
     }
+  }
+
+  public formatInputForCurrency(control: FormControl): void {
+    control.setValue(this.currencyPipe.transform(control.value.replace(/[^.\d]/g, '')));
   }
 
   private markAllAsTouched(): void {
@@ -183,11 +189,10 @@ export class ReceiptDialogComponent implements OnInit {
     let date: string | null = this.dateControl.value;
     receipt.date = new Date(date ? date : Date.now());
     receipt.location = location;
-    receipt.donation = Number(this.donationControl.value!);
-    receipt.salesTax = Number(this.salesTaxControl.value!);
-    receipt.subtotal = Number(this.subtotalControl.value!);
+    receipt.donation = Number(this.donationControl.value!.replace(/[^.\d]/g, ''));
+    receipt.salesTax = Number(this.salesTaxControl.value!.replace(/[^.\d]/g, ''));
+    receipt.subtotal = Number(this.subtotalControl.value!.replace(/[^.\d]/g, ''));
     receipt.drawAccount = drawAccount;
-
 
     this.dialogRef.close(receipt);
   }

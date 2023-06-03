@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { CurrencyPipe } from '@angular/common';
+
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
@@ -72,7 +74,7 @@ import { DrawAccountDialogComponent } from './components/dialogs/draw-account-di
     MatToolbarModule,
     ReactiveFormsModule
   ],
-  providers: [DrawAccountsService, LocationsService, ReceiptsService],
+  providers: [CurrencyPipe, DrawAccountsService, LocationsService, ReceiptsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
