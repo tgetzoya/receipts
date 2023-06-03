@@ -22,7 +22,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 
 import { AppComponent } from './app.component';
-import { ReceiptsTableComponent } from './components/tables/receipts-table/receipts-table.component';
+import { ReceiptsTableComponent } from './components/views/receipts-view/receipts-table.component';
 import { ReceiptDialogComponent } from './components/dialogs/receipt-dialog/receipt-dialog.component';
 
 import { DeleteItemDialogComponent } from "./components/dialogs/delete-item-dialog/delete-item-dialog.component";
@@ -32,10 +32,10 @@ import { DrawAccountsService } from "./services/draw-accounts.service";
 import { LocationsService } from "./services/locations.service";
 import { ReceiptsService } from "./services/receipts.service";
 
-import { DrawAccountsTableComponent } from "./components/tables/draw-accounts-table/draw-accounts-table.component";
+import { DrawAccountsTableComponent } from "./components/views/draw-accounts-view/draw-accounts-table.component";
 
 import { LocationDialogComponent } from './components/dialogs/location-dialog/location-dialog.component';
-import { LocationsTableComponent } from './components/tables/locations-table/locations-table.component';
+import { LocationsTableComponent } from './components/views/locations-view/locations-table.component';
 import { DrawAccountDialogComponent } from './components/dialogs/draw-account-dialog/draw-account-dialog.component';
 
 @NgModule({
