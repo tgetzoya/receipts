@@ -26,5 +26,12 @@ public interface ReceiptsRepository extends JpaRepository<Receipt, Long>, JpaSpe
         static Specification<Receipt> byDrawAccount(Long drawAccountId) {
             return (root, query, builder) -> builder.equal(root.get(Receipt_.DRAWACCOUNT).get("id"), drawAccountId);
         }
+
+        static Specification<Receipt> byYear(int year) {
+            LocalDate startDate = LocalDate.of(year, 1, 1);
+            LocalDate endDate = LocalDate.of(year, 12, 31);
+
+            return (root, query, builder) -> builder.between(root.get(Receipt_.DATE), startDate, endDate);
+        }
     }
 }

@@ -24,6 +24,15 @@
         </button>
       </div>
     </mat-grid-tile>
+    <mat-grid-tile>
+      <label>Total Subtotal: {{subtotalTotal | currency: 'USD'}}</label>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <label>Total Sales Tax: {{salesTaxTotal | currency: 'USD'}}</label>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <label>Total Donation: {{donationTotal| currency: 'USD'}}</label>
+    </mat-grid-tile>
   </mat-grid-list>
   <table
     id="receipts-table"
@@ -33,6 +42,7 @@
     matSortActive="date"
     matSortDirection="desc"
     [dataSource]="dataSource"
+    (contentChanged)="calculateTotals()"
   >
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>
@@ -51,17 +61,17 @@
 
     <ng-container matColumnDef="subtotal">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Subtotal </th>
-      <td mat-cell *matCellDef="let receipt"> {{receipt.subtotal | number: '1.2-2'}} </td>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.subtotal | currency: 'USD'}} </td>
     </ng-container>
 
     <ng-container matColumnDef="salesTax">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales Tax </th>
-      <td mat-cell *matCellDef="let receipt"> {{receipt.salesTax | number: '1.2-2'}} </td>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.salesTax | currency: 'USD'}} </td>
     </ng-container>
 
     <ng-container matColumnDef="donation">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Donation </th>
-      <td mat-cell *matCellDef="let receipt"> {{receipt.donation | number: '1.2-2'}} </td>
+      <td mat-cell *matCellDef="let receipt"> {{receipt.donation | currency: 'USD'}} </td>
     </ng-container>
 
     <ng-container matColumnDef="drawAccount">

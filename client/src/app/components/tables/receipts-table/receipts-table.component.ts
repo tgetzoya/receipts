@@ -26,6 +26,10 @@ export class ReceiptsTableComponent implements AfterViewInit {
 
   filterControl = new FormControl('');
 
+  subtotalTotal: number = 0;
+  salesTaxTotal: number = 0;
+  donationTotal: number = 0;
+
   displayedColumns: string[] = [
     'id',
     'date',
@@ -80,6 +84,20 @@ export class ReceiptsTableComponent implements AfterViewInit {
     this.dataSource.filter = this.filterControl.value ? this.filterControl.value!.trim().toLowerCase() : '';
   }
 
+  public calculateTotals(): void {
+    this.subtotalTotal = 0;
+    this.salesTaxTotal = 0;
+    this.donationTotal = 0;
+
+    this.dataSource.data.forEach((r: Receipt) => {
+      this.subtotalTotal += r.subtotal!;
+      this.salesTaxTotal += r.salesTax!;
+      this.donationTotal += r.donation!;
+    });
+
+    console.log(this.subtotalTotal.toFixed(2), this.salesTaxTotal.toFixed(2), this.donationTotal.toFixed(2));
+  }
+
   openDeleteDialog(receipt: Receipt | null) {
     const dialogRef = this.dialog.open(DeleteReceiptDialogComponent, {
       data: {receipt},
@@ -88,7 +106,9 @@ export class ReceiptsTableComponent implements AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(resp => {
-      this.dataSource.data = this.dataSource.data.filter(r => r.id !== resp);
+      if (resp) {
+        this.dataSource.data = this.dataSource.data.filter(r => r.id !== resp);
+      }
     });
   }
 
@@ -140,16 +160,20 @@ export class ReceiptsTableComponent implements AfterViewInit {
       if (resp) {
         /* If it has an id here, it already exists. */
         if (receipt.id) {
-          receipt.date = resp.date;
-          receipt.donation = resp.donation;
-          receipt.drawAccount = resp.drawAccount;
-          receipt.location = resp.location;
-          receipt.salesTax = resp.salesTax;
-          receipt.subtotal = resp.subtotal;
+          /* receipt above will not update the row, so this has to happen. */
+          let updatedReceipt = this.dataSource.data.find((r: Receipt) => r.id == receipt.id) as Receipt;
+
+          updatedReceipt.date = resp.date;
+          updatedReceipt.donation = resp.donation;
+          updatedReceipt.drawAccount = resp.drawAccount;
+          updatedReceipt.location = resp.location;
+          updatedReceipt.salesTax = resp.salesTax;
+          updatedReceipt.subtotal = resp.subtotal;
         } else {
           this.dataSource.data.push(resp);
-          this.dataSource._updateChangeSubscription();
         }
+
+        this.dataSource._updateChangeSubscription();
       }
     });
   }

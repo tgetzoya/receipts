@@ -19,9 +19,13 @@ public class ReceiptsController {
         this.repository = repository;
     }
 
-    @GetMapping("/receipts")
-    public List<Receipt> getAll() {
-        return repository.findAll();
+    @GetMapping({"/receipts", "/receipts/{year}"})
+    public List<Receipt> getReceiptsForYear(@PathVariable(required = false) Integer year) {
+        if (year == null) {
+            year = LocalDate.now().getYear();
+        }
+
+        return repository.findAll(byYear(year));
     }
 
     @GetMapping("/receipt/{id}")
