@@ -1,0 +1,21 @@
+.add-note-button {
+  margin-top: 5px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.left-align-text {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.note-input-field {
+
+}
+
+.space-out-buttons {
+  display: flex;
+  justify-content: space-evenly;
+}

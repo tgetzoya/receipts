@@ -14,10 +14,10 @@ import { DrawAccountDialogComponent } from "../../dialogs/draw-account-dialog/dr
 
 @Component({
   selector: 'app-draw-accounts-table',
-  templateUrl: './draw-accounts-table.component.html',
-  styleUrls: ['./draw-accounts-table.component.css']
+  templateUrl: './draw-accounts-view.component.html',
+  styleUrls: ['./draw-accounts-view.component.css']
 })
-export class DrawAccountsTableComponent implements AfterViewInit {
+export class DrawAccountsViewComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 

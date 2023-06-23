@@ -13,10 +13,10 @@ import { LocationDialogComponent } from "../../dialogs/location-dialog/location-
 
 @Component({
   selector: 'app-locations-table',
-  templateUrl: './locations-table.component.html',
-  styleUrls: ['./locations-table.component.css']
+  templateUrl: './locations-view.component.html',
+  styleUrls: ['./locations-view.component.css']
 })
-export class LocationsTableComponent implements AfterViewInit {
+export class LocationsViewComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReceiptsTableComponent } from './receipts-table.component';
+import { ReceiptsViewComponent } from './receipts-view.component';
 
 describe('ReceiptsTableComponent', () => {
-  let component: ReceiptsTableComponent;
-  let fixture: ComponentFixture<ReceiptsTableComponent>;
+  let component: ReceiptsViewComponent;
+  let fixture: ComponentFixture<ReceiptsViewComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ReceiptsTableComponent]
+      declarations: [ReceiptsViewComponent]
     });
-    fixture = TestBed.createComponent(ReceiptsTableComponent);
+    fixture = TestBed.createComponent(ReceiptsViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

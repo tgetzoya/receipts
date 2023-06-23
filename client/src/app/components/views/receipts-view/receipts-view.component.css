@@ -30,7 +30,7 @@
   padding-right: 2px;
 }
 
-.mat-mdc-row:nth-child(2n-1) {
+.mat-mdc-row:nth-child(2n) {
   background-color: ghostwhite;
 }
 
@@ -47,4 +47,8 @@
 
 .mat-mdc-row:hover .actions-container {
   visibility: visible;
+}
+
+tr.note-row {
+  height: 0;
 }

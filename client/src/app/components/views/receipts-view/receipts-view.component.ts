@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormControl } from "@angular/forms";
 
 import { MatDialog } from '@angular/material/dialog';
@@ -14,15 +15,27 @@ import { Receipt } from "../../../models/receipt.model";
 import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { LocationsService } from "../../../services/locations.service";
 import { ReceiptsService } from "../../../services/receipts.service";
+import { Note } from "../../../models/note.model";
+import { NotesService } from "../../../services/notes.service";
 
 @Component({
   selector: 'app-receipts-table',
-  templateUrl: './receipts-table.component.html',
-  styleUrls: ['./receipts-table.component.css']
+  templateUrl: './receipts-view.component.html',
+  styleUrls: ['./receipts-view.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
-export class ReceiptsTableComponent implements AfterViewInit {
+export class ReceiptsViewComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  expandedRow?: Receipt;
+  notes?: Note[];
 
   filterControl = new FormControl('');
 
@@ -47,6 +60,7 @@ export class ReceiptsTableComponent implements AfterViewInit {
     public dialog: MatDialog,
     public drawAccountService: DrawAccountsService,
     public locationService: LocationsService,
+    public notesService: NotesService,
     public receiptsService: ReceiptsService
   ) {}
 
@@ -94,8 +108,6 @@ export class ReceiptsTableComponent implements AfterViewInit {
       this.salesTaxTotal += r.salesTax!;
       this.donationTotal += r.donation!;
     });
-
-    console.log(this.subtotalTotal.toFixed(2), this.salesTaxTotal.toFixed(2), this.donationTotal.toFixed(2));
   }
 
   openDeleteDialog(receipt: Receipt | null) {
@@ -176,5 +188,10 @@ export class ReceiptsTableComponent implements AfterViewInit {
         this.dataSource._updateChangeSubscription();
       }
     });
+  }
+
+  protected showNote(row: Receipt) {
+    this.notes = undefined;
+    this.expandedRow = row;
   }
 }

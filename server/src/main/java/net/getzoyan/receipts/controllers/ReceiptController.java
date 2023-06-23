@@ -2,20 +2,20 @@ package net.getzoyan.receipts.controllers;
 
 import net.getzoyan.receipts.exceptions.NotFoundException;
 import net.getzoyan.receipts.models.Receipt;
-import net.getzoyan.receipts.repositories.ReceiptsRepository;
+import net.getzoyan.receipts.repositories.ReceiptRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static net.getzoyan.receipts.repositories.ReceiptsRepository.Specs.*;
+import static net.getzoyan.receipts.repositories.ReceiptRepository.Specs.*;
 
 @RestController
 @CrossOrigin(origins = "*")
-public class ReceiptsController {
-    private final ReceiptsRepository repository;
+public class ReceiptController {
+    private final ReceiptRepository repository;
 
-    ReceiptsController(ReceiptsRepository repository) {
+    ReceiptController(ReceiptRepository repository) {
         this.repository = repository;
     }
 

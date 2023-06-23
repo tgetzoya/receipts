@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DrawAccountsTableComponent } from './draw-accounts-table.component';
+import { DrawAccountsViewComponent } from './draw-accounts-view.component';
 
 describe('DrawAccountsTableComponent', () => {
-  let component: DrawAccountsTableComponent;
-  let fixture: ComponentFixture<DrawAccountsTableComponent>;
+  let component: DrawAccountsViewComponent;
+  let fixture: ComponentFixture<DrawAccountsViewComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DrawAccountsTableComponent]
+      declarations: [DrawAccountsViewComponent]
     });
-    fixture = TestBed.createComponent(DrawAccountsTableComponent);
+    fixture = TestBed.createComponent(DrawAccountsViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -57,3 +57,19 @@ INSERT INTO receipts.receipts (
      5.67,
      (SELECT id FROM receipts.draw_account WHERE name = 'Test Card')
  );
+
+create table receipts.notes
+(
+    id BIGINT AUTO_INCREMENT,
+    receipt_id BIGINT NOT NULL,
+    note VARCHAR(1000) NOT NULL,
+    CONSTRAINT notes_pk
+        PRIMARY KEY (id),
+    CONSTRAINT notes_receipts_id_fk
+        FOREIGN KEY (receipt_id) REFERENCES receipts (id)
+            ON UPDATE CASCADE
+)
+    comment 'Many-to-one notes for each receipt';
+
+CREATE INDEX notes_receipt_id_index
+    ON notes (receipt_id DESC);

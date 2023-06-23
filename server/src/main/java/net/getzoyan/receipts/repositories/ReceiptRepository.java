@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.time.LocalDate;
 
 
-public interface ReceiptsRepository extends JpaRepository<Receipt, Long>, JpaSpecificationExecutor<Receipt> {
+public interface ReceiptRepository extends JpaRepository<Receipt, Long>, JpaSpecificationExecutor<Receipt> {
     interface Specs {
         static Specification<Receipt> byId(Long id) {
             return (root, query, builder) -> builder.equal(root.get(Receipt_.ID), id);

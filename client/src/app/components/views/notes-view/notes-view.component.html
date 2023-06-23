@@ -1,0 +1,33 @@
+<mat-progress-bar mode="indeterminate" *ngIf="!notes"></mat-progress-bar>
+<button class="add-note-button" mat-mini-fab color="primary" (click)="createNewNote()">
+  <mat-icon>add</mat-icon>
+</button>
+<mat-list role="list" *ngIf="notes">
+  <mat-list-item role="listitem" *ngFor="let note of notes">
+    <mat-grid-list cols="10" rowHeight="2:1">
+      <mat-grid-tile>
+        <div class="space-out-buttons full-width">
+          <button mat-mini-fab color="primary" (click)="toggleEditable(note)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" (click)="removeNote(note)">
+            <mat-icon>remove</mat-icon>
+          </button>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="9">
+        <div class="left-align-text full-width">
+          <span *ngIf="editable !== note.id!">{{note.note}}</span>
+          <mat-form-field *ngIf="editable === note.id!" class="note-input-field full-width">
+            <input matInput
+                   [formControl]="inputControl"
+                   [maxLength]="1000"
+                   (blur)="createOrUpdateNote(note)"
+                   (keyup)="checkForEscapes($event, note)"
+            >
+          </mat-form-field>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </mat-list-item>
+</mat-list>

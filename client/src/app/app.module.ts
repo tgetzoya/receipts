@@ -15,8 +15,10 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from '@angular/material/table'
@@ -24,7 +26,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
 
 import { AppComponent } from './app.component';
-import { ReceiptsTableComponent } from './components/views/receipts-view/receipts-table.component';
+import { ReceiptsViewComponent } from './components/views/receipts-view/receipts-view.component';
 import { ReceiptDialogComponent } from './components/dialogs/receipt-dialog/receipt-dialog.component';
 
 import { DeleteItemDialogComponent } from "./components/dialogs/delete-item-dialog/delete-item-dialog.component";
@@ -34,11 +36,12 @@ import { DrawAccountsService } from "./services/draw-accounts.service";
 import { LocationsService } from "./services/locations.service";
 import { ReceiptsService } from "./services/receipts.service";
 
-import { DrawAccountsTableComponent } from "./components/views/draw-accounts-view/draw-accounts-table.component";
+import { DrawAccountsViewComponent } from "./components/views/draw-accounts-view/draw-accounts-view.component";
 
 import { LocationDialogComponent } from './components/dialogs/location-dialog/location-dialog.component';
-import { LocationsTableComponent } from './components/views/locations-view/locations-table.component';
+import { LocationsViewComponent } from './components/views/locations-view/locations-view.component';
 import { DrawAccountDialogComponent } from './components/dialogs/draw-account-dialog/draw-account-dialog.component';
+import { NotesViewComponent } from './components/views/notes-view/notes-view.component';
 
 @NgModule({
   declarations: [
@@ -46,11 +49,12 @@ import { DrawAccountDialogComponent } from './components/dialogs/draw-account-di
     DeleteItemDialogComponent,
     DeleteReceiptDialogComponent,
     DrawAccountDialogComponent,
-    DrawAccountsTableComponent,
+    DrawAccountsViewComponent,
     LocationDialogComponent,
-    LocationsTableComponent,
+    LocationsViewComponent,
     ReceiptDialogComponent,
-    ReceiptsTableComponent
+    ReceiptsViewComponent,
+    NotesViewComponent
   ],
   imports: [
     BrowserModule,
@@ -65,8 +69,10 @@ import { DrawAccountDialogComponent } from './components/dialogs/draw-account-di
     MatGridListModule,
     MatIconModule,
     MatInputModule,
+    MatListModule,
     MatNativeDateModule,
     MatPaginatorModule,
+    MatProgressBarModule,
     MatSelectModule,
     MatSortModule,
     MatTableModule,

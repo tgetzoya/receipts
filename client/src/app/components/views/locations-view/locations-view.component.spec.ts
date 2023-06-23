@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LocationsTableComponent } from './locations-table.component';
+import { LocationsViewComponent } from './locations-view.component';
 
 describe('LocationsTableComponent', () => {
-  let component: LocationsTableComponent;
-  let fixture: ComponentFixture<LocationsTableComponent>;
+  let component: LocationsViewComponent;
+  let fixture: ComponentFixture<LocationsViewComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [LocationsTableComponent]
+      declarations: [LocationsViewComponent]
     });
-    fixture = TestBed.createComponent(LocationsTableComponent);
+    fixture = TestBed.createComponent(LocationsViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

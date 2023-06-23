@@ -11,6 +11,7 @@ public class DrawAccount {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     private String name;
 
     public DrawAccount() {
