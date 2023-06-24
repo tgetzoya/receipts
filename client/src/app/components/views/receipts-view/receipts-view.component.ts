@@ -10,13 +10,13 @@ import { MatTableDataSource } from "@angular/material/table";
 import { DeleteReceiptDialogComponent } from "../../dialogs/delete-receipt-dialog/delete-receipt-dialog.component";
 import { ReceiptDialogComponent } from "../../dialogs/receipt-dialog/receipt-dialog.component";
 
+import { Note } from "../../../models/note.model";
 import { Receipt } from "../../../models/receipt.model";
 
 import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { LocationsService } from "../../../services/locations.service";
-import { ReceiptsService } from "../../../services/receipts.service";
-import { Note } from "../../../models/note.model";
 import { NotesService } from "../../../services/notes.service";
+import { ReceiptsService } from "../../../services/receipts.service";
 
 @Component({
   selector: 'app-receipts-table',
@@ -34,8 +34,8 @@ export class ReceiptsViewComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  expandedRow?: Receipt;
-  notes?: Note[];
+  expandedRow?: Receipt | null;
+  notes?: Note[] | null;
 
   filterControl = new FormControl('');
 
@@ -71,30 +71,19 @@ export class ReceiptsViewComponent implements AfterViewInit {
 
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.dataSource.filterPredicate = this.filterByColumns();
+    this.dataSource.filterPredicate = (data: Receipt, filter: string): boolean => {
+      return !!(filter && (
+        data.id == Number(filter) ||
+        data.subtotal?.toString().includes(filter) ||
+        data.salesTax?.toString().includes(filter) ||
+        data.donation?.toString().includes(filter) ||
+        data.location?.name?.toLowerCase().includes(filter.toLowerCase()) ||
+        data.drawAccount?.name?.toLowerCase().includes(filter.toLowerCase())
+      ));
+    };
   }
 
-  private filterByColumns() {
-    let filterFunction =
-      (data: Receipt, filter: string): boolean => {
-        if (filter && (
-          data.id == Number(filter) ||
-          data.subtotal?.toString().includes(filter) ||
-          data.salesTax?.toString().includes(filter) ||
-          data.donation?.toString().includes(filter) ||
-          data.location?.name?.toLowerCase().includes(filter.toLowerCase()) ||
-          data.drawAccount?.name?.toLowerCase().includes(filter.toLowerCase())
-        )) {
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-    return filterFunction;
-  }
-
-  public filterTable() {
+  public filterTable(): void {
     this.dataSource.filter = this.filterControl.value ? this.filterControl.value!.trim().toLowerCase() : '';
   }
 
@@ -127,8 +116,8 @@ export class ReceiptsViewComponent implements AfterViewInit {
   openReceiptDialog(receipt: Receipt | null, duplicate: boolean) {
     const dialogRef = this.dialog.open(ReceiptDialogComponent, {
       data: {receipt, duplicate},
-      height: '800px',
-      width: '400px'
+      height: '*',
+      width: '800px'
     });
 
     dialogRef.afterClosed().subscribe((dialogResponse: Receipt) => {
@@ -173,14 +162,16 @@ export class ReceiptsViewComponent implements AfterViewInit {
         /* If it has an id here, it already exists. */
         if (receipt.id) {
           /* receipt above will not update the row, so this has to happen. */
-          let updatedReceipt = this.dataSource.data.find((r: Receipt) => r.id == receipt.id) as Receipt;
+          let updatedReceipt = this.dataSource.data.find((r: Receipt) => r.id == receipt.id);
 
-          updatedReceipt.date = resp.date;
-          updatedReceipt.donation = resp.donation;
-          updatedReceipt.drawAccount = resp.drawAccount;
-          updatedReceipt.location = resp.location;
-          updatedReceipt.salesTax = resp.salesTax;
-          updatedReceipt.subtotal = resp.subtotal;
+          if (updatedReceipt) {
+            updatedReceipt.date = resp.date;
+            updatedReceipt.donation = resp.donation;
+            updatedReceipt.drawAccount = resp.drawAccount;
+            updatedReceipt.location = resp.location;
+            updatedReceipt.salesTax = resp.salesTax;
+            updatedReceipt.subtotal = resp.subtotal;
+          }
         } else {
           this.dataSource.data.push(resp);
         }
@@ -190,8 +181,14 @@ export class ReceiptsViewComponent implements AfterViewInit {
     });
   }
 
-  protected showNote(row: Receipt) {
-    this.notes = undefined;
-    this.expandedRow = row;
+  showNote(row: Receipt): void {
+    this.notes = null;
+
+    /* if it's already open, then close it. */
+    if (this.expandedRow == row) {
+      this.expandedRow = undefined;
+    } else {
+      this.expandedRow = row;
+    }
   }
 }

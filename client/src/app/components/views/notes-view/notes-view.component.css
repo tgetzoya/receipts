@@ -1,4 +1,4 @@
-.add-note-button {
+.margin-top {
   margin-top: 5px;
 }
 
@@ -9,10 +9,12 @@
 .left-align-text {
   display: flex;
   justify-content: flex-start;
+  word-wrap: break-word;
+  margin-left: 10px;
 }
 
-.note-input-field {
-
+.non-editing-note {
+  white-space: normal;
 }
 
 .space-out-buttons {

@@ -1,28 +1,49 @@
-<mat-progress-bar mode="indeterminate" *ngIf="!notes"></mat-progress-bar>
-<button class="add-note-button" mat-mini-fab color="primary" (click)="createNewNote()">
+<mat-progress-bar class="margin-top" mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+<button
+  class="margin-top"
+  mat-button
+  color="primary"
+  (click)="createNewNote()"
+  matTooltip="Add New"
+  matTooltipShowDelay="1000"
+>
   <mat-icon>add</mat-icon>
 </button>
-<mat-list role="list" *ngIf="notes">
+<mat-list role="list" *ngIf="!loading">
   <mat-list-item role="listitem" *ngFor="let note of notes">
     <mat-grid-list cols="10" rowHeight="2:1">
       <mat-grid-tile>
         <div class="space-out-buttons full-width">
-          <button mat-mini-fab color="primary" (click)="toggleEditable(note)">
+          <button
+            mat-button
+            color="primary"
+            (click)="toggleEditable(note)"
+            matTooltip="Edit"
+            matTooltipShowDelay="1000"
+          >
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-mini-fab color="warn" (click)="removeNote(note)">
+          <button
+            mat-button
+            color="warn"
+            (click)="removeNote(note)"
+            matTooltip="Remove"
+            matTooltipShowDelay="1000"
+          >
             <mat-icon>remove</mat-icon>
           </button>
         </div>
       </mat-grid-tile>
       <mat-grid-tile [colspan]="9">
         <div class="left-align-text full-width">
-          <span *ngIf="editable !== note.id!">{{note.note}}</span>
+          <span class="non-editing-note" *ngIf="editable !== note.id!">{{note.note}}</span>
           <mat-form-field *ngIf="editable === note.id!" class="note-input-field full-width">
             <input matInput
+                   #newNoteInput
+                   [autofocus]="newNoteInput.focus()"
                    [formControl]="inputControl"
                    [maxLength]="1000"
-                   (blur)="createOrUpdateNote(note)"
+                   (blur)="saveNote(note)"
                    (keyup)="checkForEscapes($event, note)"
             >
           </mat-form-field>

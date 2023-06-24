@@ -24,6 +24,7 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 import { AppComponent } from './app.component';
 import { ReceiptsViewComponent } from './components/views/receipts-view/receipts-view.component';
@@ -78,6 +79,7 @@ import { NotesViewComponent } from './components/views/notes-view/notes-view.com
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
+    MatTooltipModule,
     ReactiveFormsModule
   ],
   providers: [CurrencyPipe, DrawAccountsService, LocationsService, ReceiptsService],
