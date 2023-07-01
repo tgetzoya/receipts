@@ -4,8 +4,8 @@ FLUSH PRIVILEGES;
 
 CREATE TABLE receipts.draw_account
 (
-    id   BIGINT AUTO_INCREMENT,
-    name VARCHAR(255),
+    id      BIGINT          AUTO_INCREMENT,
+    name    VARCHAR(255),
     CONSTRAINT draw_account_pk
         PRIMARY KEY (id)
 )
@@ -16,8 +16,8 @@ VALUES ('Test Card');
 
 CREATE TABLE receipts.location
 (
-    id   BIGINT AUTO_INCREMENT,
-    name VARCHAR(255),
+    id      BIGINT          AUTO_INCREMENT,
+    name    VARCHAR(255),
     CONSTRAINT location_pk
         PRIMARY KEY (id)
 )
@@ -27,13 +27,13 @@ INSERT INTO receipts.location (name) VALUES ('Test Location');
 
 CREATE TABLE receipts.receipts
 (
-    id           BIGINT                     AUTO_INCREMENT,
-    date         DATE                       NOT NULL,
-    location     VARCHAR(255)               NOT NULL,
-    subtotal     DECIMAL(5, 2)              NOT NULL,
-    sales_tax    DECIMAL(5, 2) DEFAULT 0.00 NOT NULL,
-    donation     DECIMAL(5, 2) DEFAULT 0.00 NOT NULL,
-    draw_account BIGINT        DEFAULT 0    NOT NULL,
+    id           BIGINT                         AUTO_INCREMENT,
+    date         DATE                           NOT NULL,
+    location     VARCHAR(255)                   NOT NULL,
+    subtotal     DECIMAL(5, 2)                  NOT NULL,
+    sales_tax    DECIMAL(5, 2)  DEFAULT 0.00    NOT NULL,
+    donation     DECIMAL(5, 2)  DEFAULT 0.00    NOT NULL,
+    draw_account BIGINT         DEFAULT 0       NOT NULL,
     CONSTRAINT receipts_pk
         PRIMARY KEY (id),
     CONSTRAINT receipts_draw_account_id_fk
@@ -44,32 +44,34 @@ CREATE TABLE receipts.receipts
 CREATE INDEX receipts_date_index ON receipts.receipts (date DESC);
 CREATE INDEX receipts_date_location_index ON receipts.receipts (date DESC, location ASC);
 
-INSERT INTO receipts.receipts (
-    date,
-    location,
-    subtotal,
-    sales_tax,
-    draw_account
-) VALUES (
-     '2023-01-01',
-     (SELECT id FROM receipts.location WHERE name = 'Test Location'),
-     12.34,
-     5.67,
-     (SELECT id FROM receipts.draw_account WHERE name = 'Test Card')
- );
-
 create table receipts.notes
 (
-    id BIGINT AUTO_INCREMENT,
-    receipt_id BIGINT NOT NULL,
-    note VARCHAR(1000) NOT NULL,
+    id          BIGINT          AUTO_INCREMENT,
+    receipt_id  BIGINT          NOT NULL,
+    note        VARCHAR(1000)   NOT NULL,
     CONSTRAINT notes_pk
         PRIMARY KEY (id),
     CONSTRAINT notes_receipts_id_fk
         FOREIGN KEY (receipt_id) REFERENCES receipts (id)
-            ON UPDATE CASCADE
+            ON UPDATE CASCADE ON DELETE CASCADE
 )
     comment 'Many-to-one notes for each receipt';
 
 CREATE INDEX notes_receipt_id_index
     ON notes (receipt_id DESC);
+
+CREATE TABLE receipts.scheduled
+(
+    id                      INT     NOT NULL,
+    reference_receipt_id    BIGINT  NOT NULL,
+    repeat_interval         INT     NOT NULL,
+    next_date               DATE    NOT NULL,
+    CONSTRAINT scheduled_pk
+        PRIMARY KEY (id),
+    CONSTRAINT scheduled_receipts_id_fk
+        FOREIGN KEY (reference_receipt_id) REFERENCES receipts (id)
+            ON DELETE CASCADE
+)
+    COMMENT 'Scheduled or repeating receipts';
+
+CREATE INDEX scheduled_next_date_index ON scheduled (next_date DESC);

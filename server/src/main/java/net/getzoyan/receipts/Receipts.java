@@ -2,11 +2,12 @@ package net.getzoyan.receipts;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class Receipts {
 	public static void main(String[] args) {
 		SpringApplication.run(Receipts.class, args);
 	}
-
 }
