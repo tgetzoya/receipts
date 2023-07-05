@@ -30,9 +30,9 @@ CREATE TABLE receipts.receipts
     id           BIGINT                         AUTO_INCREMENT,
     date         DATE                           NOT NULL,
     location     VARCHAR(255)                   NOT NULL,
-    subtotal     DECIMAL(5, 2)                  NOT NULL,
-    sales_tax    DECIMAL(5, 2)  DEFAULT 0.00    NOT NULL,
-    donation     DECIMAL(5, 2)  DEFAULT 0.00    NOT NULL,
+    subtotal     DECIMAL(7, 2)                  NOT NULL,
+    sales_tax    DECIMAL(7, 2)  DEFAULT 0.00    NOT NULL,
+    donation     DECIMAL(7, 2)  DEFAULT 0.00    NOT NULL,
     draw_account BIGINT         DEFAULT 0       NOT NULL,
     CONSTRAINT receipts_pk
         PRIMARY KEY (id),
@@ -62,14 +62,21 @@ CREATE INDEX notes_receipt_id_index
 
 CREATE TABLE receipts.scheduled
 (
-    id                      INT     NOT NULL,
-    reference_receipt_id    BIGINT  NOT NULL,
-    repeat_interval         INT     NOT NULL,
-    next_date               DATE    NOT NULL,
+    id                      INT             NOT NULL,
+    repeat_interval         INT             NOT NULL,
+    next_date               DATE            NOT NULL,
+    location_id             BIGINT          NOT NULL,
+    subtotal                DECIMAL(7,2)    NOT NULL,
+    sales_tax               DECIMAL(7,2)    NOT NULL,
+    donation                DECIMAL(7,2)    NOT NULL,
+    draw_account_id         BIGINT          NOT NULL,
     CONSTRAINT scheduled_pk
         PRIMARY KEY (id),
     CONSTRAINT scheduled_receipts_id_fk
-        FOREIGN KEY (reference_receipt_id) REFERENCES receipts (id)
+        FOREIGN KEY (location_id) REFERENCES location (id)
+            ON DELETE CASCADE,
+    CONSTRAINT scheduled_draw_account_id_fk
+        FOREIGN KEY (draw_account_id) REFERENCES draw_account (id)
             ON DELETE CASCADE
 )
     COMMENT 'Scheduled or repeating receipts';

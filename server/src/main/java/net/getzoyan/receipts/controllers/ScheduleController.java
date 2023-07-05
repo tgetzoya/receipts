@@ -38,9 +38,13 @@ public class ScheduleController {
     public ScheduledTask updateSchedule(@RequestBody ScheduledTask update) {
         return repository.findById(update.getId())
                 .map(schedule -> {
+                    schedule.setDonation(update.getDonation());
+                    schedule.setDrawAccount(update.getDrawAccount());
                     schedule.setInterval(update.getInterval());
+                    schedule.setLocation(update.getLocation());
                     schedule.setNextDate(update.getNextDate());
-                    schedule.setReferenceReceiptId(update.getReferenceReceiptId());
+                    schedule.setSalesTax(update.getSalesTax());
+                    schedule.setSubtotal(update.getSubtotal());
                     return repository.save(schedule);
                 }).orElseThrow(() -> new NotFoundException(Note.class.getSimpleName(), update.getId()));
     }
