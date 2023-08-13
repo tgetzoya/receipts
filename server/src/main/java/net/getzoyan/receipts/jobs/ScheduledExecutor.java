@@ -3,7 +3,6 @@ package net.getzoyan.receipts.jobs;
 import net.getzoyan.receipts.enums.ScheduleInterval;
 import net.getzoyan.receipts.models.Note;
 import net.getzoyan.receipts.models.Receipt;
-import net.getzoyan.receipts.models.ScheduledTask;
 import net.getzoyan.receipts.repositories.NoteRepository;
 import net.getzoyan.receipts.repositories.ReceiptRepository;
 import net.getzoyan.receipts.repositories.ScheduleRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static net.getzoyan.receipts.repositories.ScheduleRepository.Specs.byDate;
 
@@ -36,6 +34,7 @@ public class ScheduledExecutor {
         this.noteRepository = noteRepository;
     }
 
+//    @Scheduled(fixedRate = 5000)
     @Scheduled(cron = "0 0 1 * * *")
     public void execute() {
         scheduleRepository.findAll(byDate(LocalDate.now())).stream().forEach(task -> {

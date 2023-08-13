@@ -62,7 +62,7 @@ CREATE INDEX notes_receipt_id_index
 
 CREATE TABLE receipts.scheduled
 (
-    id                      INT             NOT NULL,
+    id                      BIGINT          AUTO_INCREMENT,
     repeat_interval         INT             NOT NULL,
     next_date               DATE            NOT NULL,
     location_id             BIGINT          NOT NULL,

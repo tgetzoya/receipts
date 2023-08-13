@@ -1,6 +1,6 @@
 #receipts-table-container {
   display: block;
-  width: 75%;
+  width: 85%;
   margin: 25px auto;
 }
 
@@ -13,11 +13,6 @@
   display: flex;
   justify-content: flex-end;
   width: 100%;
-}
-
-.spacer {
-  margin-left: 10px;
-  margin-right: 10px;
 }
 
 .actions-container {

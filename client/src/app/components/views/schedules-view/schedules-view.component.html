@@ -1,0 +1,99 @@
+<div id="schedules-table-container">
+  <mat-grid-list cols="3" rowHeight="5:1">
+    <mat-grid-tile>
+      <mat-form-field class="search-box">
+        <mat-label>Filter</mat-label>
+        <input
+          matInput
+          [formControl]="filterControl"
+          placeholder="Company Name"
+          (keyup)="filterTable()"
+        >
+        <button matSuffix mat-icon-button (click)="filterControl.setValue(''); filterTable();">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <table
+    id="schedules-table"
+    class="mat-elevation-z8"
+    mat-table
+    matSort
+    matSortActive="date"
+    matSortDirection="desc"
+    [dataSource]="dataSource"
+    multiTemplateDataRows
+  >
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="interval">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Interval </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.interval | titlecase}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nextDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Next Date </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.nextDate | date: 'yyyy-MM-dd'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="location">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.location.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="subtotal">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.subtotal  | currency: 'USD'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="salesTax">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Sales Tax </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.salesTax  | currency: 'USD'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="donation">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Donation </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.donation  | currency: 'USD'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="drawAccount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Donation </th>
+      <td mat-cell *matCellDef="let schedule"> {{schedule.drawAccount.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let schedule">
+        <div class="actions-container">
+          <button
+            mat-button
+            color="primary"
+            matTooltip="Edit"
+            matTooltipShowDelay="1000"
+            (click)="openSchedule(schedule)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <label class="spacer">|</label>
+          <button
+            mat-button
+            color="warn"
+            matTooltip="Delete"
+            matTooltipShowDelay="1000"
+            (click)="deleteSchedule(schedule)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" ></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

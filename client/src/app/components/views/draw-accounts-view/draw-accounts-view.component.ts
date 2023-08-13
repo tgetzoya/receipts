@@ -13,7 +13,7 @@ import { FormControl } from "@angular/forms";
 import { DrawAccountDialogComponent } from "../../dialogs/draw-account-dialog/draw-account-dialog.component";
 
 @Component({
-  selector: 'app-draw-accounts-table',
+  selector: 'app-draw-accounts-view',
   templateUrl: './draw-accounts-view.component.html',
   styleUrls: ['./draw-accounts-view.component.css']
 })

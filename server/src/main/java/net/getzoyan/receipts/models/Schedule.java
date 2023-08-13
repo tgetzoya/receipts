@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity(name = "scheduled")
-public class ScheduledTask {
+public class Schedule {
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

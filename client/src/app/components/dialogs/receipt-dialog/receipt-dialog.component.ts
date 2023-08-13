@@ -1,16 +1,18 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import { AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { map, Observable, startWith } from 'rxjs';
-import { CurrencyPipe } from "@angular/common";
+import { CurrencyPipe, formatDate } from "@angular/common";
 
 import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { LocationsService } from "../../../services/locations.service";
 import { ReceiptsService } from "../../../services/receipts.service";
+import { ScheduleService } from "../../../services/schedule.service";
 
 import { DrawAccount } from "../../../models/draw-account.model";
 import { Location } from "../../../models/location.model";
 import { Receipt } from "../../../models/receipt.model";
+import { Schedule } from "../../../models/schedule.model";
 
 export function notExistsValidator(items: any[]): ValidatorFn {
   return (control:AbstractControl) : ValidationErrors | null => {
@@ -38,6 +40,8 @@ export class ReceiptDialogComponent implements OnInit {
   locationControl = new FormControl('', Validators.required);
   salesTaxControl = new FormControl('', Validators.required);
   subtotalControl = new FormControl('', Validators.required);
+  intervalControl = new FormControl('');
+  nextScheduledDateControl = new FormControl('');
 
   filteredDrawAccountOptions!: Observable<DrawAccount[]>;
   filteredLocationOptions!: Observable<Location[]>;
@@ -45,6 +49,8 @@ export class ReceiptDialogComponent implements OnInit {
 
   drawAccounts?: DrawAccount[];
   locations?: Location[];
+  intervals?: string[];
+  schedule?: Schedule;
 
   existingReceipts: Receipt[] = [];
 
@@ -54,19 +60,31 @@ export class ReceiptDialogComponent implements OnInit {
     public drawAccountsService: DrawAccountsService,
     public locationsService: LocationsService,
     public receiptsService: ReceiptsService,
+    public scheduleService: ScheduleService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   ngOnInit() {
-    if (this.data.receipt) {
-      this.title = "Edit Receipt";
+    if (this.data.receipt || this.data.schedule) {
+      let drawAccount = this.data.receipt ? this.data.receipt.drawAccount.name : this.data.schedule.drawAccount.name;
+      let donation = this.data.receipt ? this.data.receipt.donation : this.data.schedule.donation;
+      let location = this.data.receipt ? this.data.receipt.location.name : this.data.schedule.location.name;
+      let salesTax = this.data.receipt ? this.data.receipt.salesTax : this.data.schedule.salesTax;
+      let subtotal = this.data.receipt ? this.data.receipt.subtotal : this.data.schedule.subtotal;
 
-      this.drawAccountControl.setValue(this.data.receipt.drawAccount.name);
-      this.dateControl.setValue(this.data.duplicate ? '' : this.data.receipt.date);
-      this.donationControl.setValue(this.currencyPipe.transform(this.data.receipt.donation));
-      this.locationControl.setValue(this.data.receipt.location.name);
-      this.salesTaxControl.setValue(this.currencyPipe.transform(this.data.receipt.salesTax));
-      this.subtotalControl.setValue(this.currencyPipe.transform(this.data.receipt.subtotal));
+
+      this.title = this.data.receipt ? "Edit Receipt" : "Edit Scheduled";
+
+      /* Only for receipt, not used in schedule. */
+      if (this.data.receipt) {
+        this.dateControl.setValue(this.data.duplicate ? '' : this.data.receipt.date);
+      }
+
+      this.drawAccountControl.setValue(drawAccount);
+      this.donationControl.setValue(this.currencyPipe.transform(donation));
+      this.locationControl.setValue(location);
+      this.salesTaxControl.setValue(this.currencyPipe.transform(salesTax));
+      this.subtotalControl.setValue(this.currencyPipe.transform(subtotal));
     } else {
       this.title = "Create Receipt";
     }
@@ -91,6 +109,27 @@ export class ReceiptDialogComponent implements OnInit {
         startWith(''),
         map(value => this.filterLocations(value || '')),
       );
+    });
+
+    this.scheduleService.getScheduleIntervals().subscribe(res => {
+      if (res) {
+        this.intervals = res;
+
+        if (this.data.receipt && this.data.receipt.id && this.data.receipt.id > 0) {
+          this.scheduleService.getScheduleByLocationId(this.data.receipt.location.id).subscribe(resp => {
+            if (resp && resp.interval && resp.nextDate) {
+              this.schedule = resp;
+              this.intervalControl.setValue(resp.interval);
+              this.nextScheduledDateControl.setValue(formatDate(resp.nextDate, 'yyyy-MM-dd', 'en'));
+            } else {
+              this.schedule = new Schedule();
+            }
+          });
+        } else if (this.data.schedule) {
+          this.intervalControl.setValue(this.data.schedule.interval);
+          this.nextScheduledDateControl.setValue(formatDate(this.data.schedule.nextDate, 'yyyy-MM-dd', 'en'));
+        }
+      }
     });
   }
 
@@ -141,22 +180,81 @@ export class ReceiptDialogComponent implements OnInit {
       date.toISOString().slice(0, 10),
       location?.id
     ).subscribe(resp => {
-
       if (resp && resp.length > 0) {
         this.existingReceipts = resp;
-        this.dialogRef.updateSize("400px", "900px");
       } else {
         this.existingReceipts = [];
-        this.dialogRef.updateSize("400px", "800px");
       }
-
     });
+  }
+
+  public setNextScheduledDate(): void {
+    if (!(this.dateControl.value && this.intervalControl.value) || this.intervalControl.value == 'NONE') {
+      this.nextScheduledDateControl.setValue(null);
+      return
+    }
+
+    let date: Date = new Date(new Date(this.dateControl.value).toDateString());
+    let now: Date = new Date(new Date(Date.now()).toDateString());
+
+    switch (this.intervalControl.value) {
+      case 'DAILY': {
+        while (date <= now) {
+          date.setDate(date.getDate() + 1);
+        }
+        break;
+      }
+      case 'WEEKLY': {
+        while (date <= now) {
+          date.setDate(date.getDate() + 7);
+        }
+        break;
+      }
+      case 'MONTHLY': {
+        while (date <= now) {
+          date.setMonth(date.getMonth() + 1);
+        }
+        break;
+      }
+      case 'ANNUALLY': {
+        while (date <= now) {
+          date.setFullYear(date.getFullYear() + 1);
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+
+    this.nextScheduledDateControl.setValue(formatDate(date, 'yyyy-MM-dd', 'en'));
+  }
+
+  private createSchedule(drawAccount: DrawAccount, location: Location): Schedule | undefined {
+    if (!this.intervalControl.value || !this.nextScheduledDateControl.value) {
+      return undefined;
+    }
+
+    let schedule: Schedule = new Schedule();
+
+    if (this.data.schedule?.id) {
+      schedule.id = this.data.schedule.id;
+    }
+    schedule.drawAccount = drawAccount;
+    schedule.interval = String(this.intervalControl.value);
+    schedule.donation = Number(this.donationControl.value!.replace(/[^.\d]/g, ''));
+    schedule.location = location;
+    schedule.salesTax = Number(this.salesTaxControl.value!.replace(/[^.\d]/g, ''));
+    schedule.subtotal = Number(this.subtotalControl.value!.replace(/[^.\d]/g, ''));
+    schedule.nextDate = new Date(this.nextScheduledDateControl.value);
+
+    return schedule;
   }
 
   public save(): void {
     if (
       (this.drawAccountControl.invalid && !this.drawAccountControl.errors!['notExists']) ||
-      this.dateControl.invalid ||
+      (!this.data.schedule && this.dateControl.invalid) ||
       this.donationControl.invalid ||
       (this.locationControl.invalid && !this.locationControl.errors!['notExists']) ||
       this.salesTaxControl.invalid ||
@@ -186,14 +284,18 @@ export class ReceiptDialogComponent implements OnInit {
       drawAccount.name = this.drawAccountControl.value!;
     }
 
-    let date: string | null = this.dateControl.value;
-    receipt.date = new Date(date ? date : Date.now());
-    receipt.location = location;
-    receipt.donation = Number(this.donationControl.value!.replace(/[^.\d]/g, ''));
-    receipt.salesTax = Number(this.salesTaxControl.value!.replace(/[^.\d]/g, ''));
-    receipt.subtotal = Number(this.subtotalControl.value!.replace(/[^.\d]/g, ''));
-    receipt.drawAccount = drawAccount;
+    if (!this.data.schedule) {
+      let date: string | null = this.dateControl.value;
+      receipt.date = new Date(date ? date : Date.now());
+      receipt.location = location;
+      receipt.donation = Number(this.donationControl.value!.replace(/[^.\d]/g, ''));
+      receipt.salesTax = Number(this.salesTaxControl.value!.replace(/[^.\d]/g, ''));
+      receipt.subtotal = Number(this.subtotalControl.value!.replace(/[^.\d]/g, ''));
+      receipt.drawAccount = drawAccount;
 
-    this.dialogRef.close(receipt);
+      this.dialogRef.close({receipt, schedule: this.createSchedule(drawAccount, location)});
+    } else {
+      this.dialogRef.close(this.createSchedule(drawAccount, location));
+    }
   }
 }

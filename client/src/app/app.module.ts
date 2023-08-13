@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CurrencyPipe } from '@angular/common';
 
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
@@ -21,6 +21,7 @@ import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSortModule } from "@angular/material/sort";
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from "@angular/material/snack-bar";
 import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatToolbarModule } from "@angular/material/toolbar";
@@ -43,6 +44,7 @@ import { LocationDialogComponent } from './components/dialogs/location-dialog/lo
 import { LocationsViewComponent } from './components/views/locations-view/locations-view.component';
 import { DrawAccountDialogComponent } from './components/dialogs/draw-account-dialog/draw-account-dialog.component';
 import { NotesViewComponent } from './components/views/notes-view/notes-view.component';
+import { SchedulesViewComponent } from './components/views/schedules-view/schedules-view.component';
 
 @NgModule({
   declarations: [
@@ -53,9 +55,10 @@ import { NotesViewComponent } from './components/views/notes-view/notes-view.com
     DrawAccountsViewComponent,
     LocationDialogComponent,
     LocationsViewComponent,
+    NotesViewComponent,
     ReceiptDialogComponent,
     ReceiptsViewComponent,
-    NotesViewComponent
+    SchedulesViewComponent
   ],
   imports: [
     BrowserModule,
@@ -76,13 +79,20 @@ import { NotesViewComponent } from './components/views/notes-view/notes-view.com
     MatProgressBarModule,
     MatSelectModule,
     MatSortModule,
+    MatSnackBarModule,
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
     ReactiveFormsModule
   ],
-  providers: [CurrencyPipe, DrawAccountsService, LocationsService, ReceiptsService],
+  providers: [
+    CurrencyPipe,
+    DrawAccountsService,
+    LocationsService,
+    ReceiptsService,
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 1500}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

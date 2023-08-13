@@ -5,6 +5,7 @@ import { FormControl } from "@angular/forms";
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 
 import { DeleteReceiptDialogComponent } from "../../dialogs/delete-receipt-dialog/delete-receipt-dialog.component";
@@ -17,9 +18,10 @@ import { DrawAccountsService } from "../../../services/draw-accounts.service";
 import { LocationsService } from "../../../services/locations.service";
 import { NotesService } from "../../../services/notes.service";
 import { ReceiptsService } from "../../../services/receipts.service";
+import { ScheduleService } from "../../../services/schedule.service";
 
 @Component({
-  selector: 'app-receipts-table',
+  selector: 'app-receipts-view',
   templateUrl: './receipts-view.component.html',
   styleUrls: ['./receipts-view.component.css'],
   animations: [
@@ -61,7 +63,9 @@ export class ReceiptsViewComponent implements AfterViewInit {
     public drawAccountService: DrawAccountsService,
     public locationService: LocationsService,
     public notesService: NotesService,
-    public receiptsService: ReceiptsService
+    public receiptsService: ReceiptsService,
+    public scheduleService: ScheduleService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngAfterViewInit() {
@@ -117,17 +121,33 @@ export class ReceiptsViewComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(ReceiptDialogComponent, {
       data: {receipt, duplicate},
       height: '*',
-      width: '800px'
+      width: '650px'
     });
 
-    dialogRef.afterClosed().subscribe((dialogResponse: Receipt) => {
+    dialogRef.afterClosed().subscribe((dialogResponse: any) => {
       if (dialogResponse) {
-        if (!dialogResponse.location?.id) {
-          this.createNewLocation(dialogResponse);
-        } else if (!dialogResponse.drawAccount?.id) {
-          this.createNewDrawAccount(dialogResponse);
+        let receipt = dialogResponse.receipt;
+
+        if (!receipt.location?.id) {
+          this.createNewLocation(receipt);
+        } else if (!receipt.drawAccount?.id) {
+          this.createNewDrawAccount(receipt);
         } else {
-          this.createOrUpdateReceipt(dialogResponse);
+          this.createOrUpdateReceipt(receipt);
+        }
+
+        if (dialogResponse.schedule) {
+          if (dialogResponse.schedule.interval === 'NONE' && dialogResponse.schedule.id) {
+            this.scheduleService.deleteSchedule(dialogResponse.schedule.id);
+          } else {
+            this.scheduleService.createSchedule(dialogResponse.schedule).subscribe(resp => {
+              if (resp) {
+                this.snackBar.open("Schedule successfully created.");
+              } else {
+                this.snackBar.open("Schedule could not be created.");
+              }
+            });
+          }
         }
       }
     });

@@ -1,0 +1,25 @@
+#schedules-table-container {
+  display: block;
+  width: 75%;
+  margin: 25px auto;
+}
+
+.search-box {
+  display: flex;
+  width: 100%;
+}
+
+.button-container{
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.actions-container {
+  visibility: hidden;
+  justify-content: space-around;
+}
+
+.mat-mdc-row:hover .actions-container {
+  visibility: visible;
+}

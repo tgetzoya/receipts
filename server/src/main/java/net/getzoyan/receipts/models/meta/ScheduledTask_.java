@@ -4,21 +4,21 @@ import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
 import net.getzoyan.receipts.models.DrawAccount;
 import net.getzoyan.receipts.models.Location;
-import net.getzoyan.receipts.models.ScheduledTask;
+import net.getzoyan.receipts.models.Schedule;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@StaticMetamodel(ScheduledTask.class)
+@StaticMetamodel(Schedule.class)
 public class ScheduledTask_ {
-    public static volatile SingularAttribute<ScheduledTask, BigDecimal> donation;
-    public static volatile SingularAttribute<ScheduledTask, DrawAccount> drawAccount;
-    public static volatile SingularAttribute<ScheduledTask, Long> id;
-    public static volatile SingularAttribute<ScheduledTask, Integer> interval;
-    public static volatile SingularAttribute<ScheduledTask, Location> location;
-    public static volatile SingularAttribute<ScheduledTask, LocalDate> nextDate;
-    public static volatile SingularAttribute<ScheduledTask, BigDecimal> salesTax;
-    public static volatile SingularAttribute<ScheduledTask, BigDecimal> subtotal;
+    public static volatile SingularAttribute<Schedule, BigDecimal> donation;
+    public static volatile SingularAttribute<Schedule, DrawAccount> drawAccount;
+    public static volatile SingularAttribute<Schedule, Long> id;
+    public static volatile SingularAttribute<Schedule, Integer> interval;
+    public static volatile SingularAttribute<Schedule, Location> location;
+    public static volatile SingularAttribute<Schedule, LocalDate> nextDate;
+    public static volatile SingularAttribute<Schedule, BigDecimal> salesTax;
+    public static volatile SingularAttribute<Schedule, BigDecimal> subtotal;
 
     public static final String DRAW_ACCOUNT = "drawAccount";
     public static final String ID = "id";

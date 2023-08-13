@@ -12,7 +12,7 @@ import { FormControl } from "@angular/forms";
 import { LocationDialogComponent } from "../../dialogs/location-dialog/location-dialog.component";
 
 @Component({
-  selector: 'app-locations-table',
+  selector: 'app-locations-view',
   templateUrl: './locations-view.component.html',
   styleUrls: ['./locations-view.component.css']
 })
