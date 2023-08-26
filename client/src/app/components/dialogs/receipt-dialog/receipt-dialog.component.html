@@ -69,25 +69,27 @@
       </mat-autocomplete>
     </mat-form-field>
   </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-form-field class="item">
-      <mat-label>Interval</mat-label>
-      <mat-select [formControl]="intervalControl" (selectionChange)="setNextScheduledDate()">
-        <mat-option *ngFor="let interval of intervals" [value]="interval">
-          {{interval | titlecase}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-form-field>
-      <mat-label>Next Scheduled Date</mat-label>
-      <input matInput [matDatepicker]="nextDatePicker" [formControl]="nextScheduledDateControl">
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="nextDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #nextDatePicker></mat-datepicker>
-    </mat-form-field>
-  </mat-grid-tile>
+  <div *ngIf="showInterval">
+    <mat-grid-tile>
+      <mat-form-field class="item">
+        <mat-label>Interval</mat-label>
+        <mat-select [formControl]="intervalControl" (selectionChange)="setNextScheduledDate()">
+          <mat-option *ngFor="let interval of intervals" [value]="interval">
+            {{interval | titlecase}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field>
+        <mat-label>Next Scheduled Date</mat-label>
+        <input matInput [matDatepicker]="nextDatePicker" [formControl]="nextScheduledDateControl">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="nextDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #nextDatePicker></mat-datepicker>
+      </mat-form-field>
+    </mat-grid-tile>
+  </div>
   <mat-grid-tile>
     <div class="actions-container">
       <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>

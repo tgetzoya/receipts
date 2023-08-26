@@ -43,6 +43,8 @@ export class ReceiptDialogComponent implements OnInit {
   intervalControl = new FormControl('');
   nextScheduledDateControl = new FormControl('');
 
+  showInterval: boolean = false;
+
   filteredDrawAccountOptions!: Observable<DrawAccount[]>;
   filteredLocationOptions!: Observable<Location[]>;
   title!: string;
@@ -75,6 +77,11 @@ export class ReceiptDialogComponent implements OnInit {
 
       this.title = this.data.receipt ? "Edit Receipt" : "Edit Scheduled";
 
+      /* If this.data.receipt exists, this is an edit of an existing receipt.
+       * If this.data.schedule exits, this is an edit _of_ the schedule.
+       */
+      this.showInterval = !this.data.receipt && this.data.schedule;
+
       /* Only for receipt, not used in schedule. */
       if (this.data.receipt) {
         this.dateControl.setValue(this.data.duplicate ? '' : this.data.receipt.date);
@@ -87,6 +94,7 @@ export class ReceiptDialogComponent implements OnInit {
       this.subtotalControl.setValue(this.currencyPipe.transform(subtotal));
     } else {
       this.title = "Create Receipt";
+      this.showInterval = true;
     }
 
     this.drawAccountsService.getDrawAccounts().subscribe(res => {
@@ -293,7 +301,11 @@ export class ReceiptDialogComponent implements OnInit {
       receipt.subtotal = Number(this.subtotalControl.value!.replace(/[^.\d]/g, ''));
       receipt.drawAccount = drawAccount;
 
-      this.dialogRef.close({receipt, schedule: this.createSchedule(drawAccount, location)});
+      this.dialogRef.close(this.showInterval ?
+        {receipt, schedule: this.createSchedule(drawAccount, location)}
+        :
+        {receipt}
+      );
     } else {
       this.dialogRef.close(this.createSchedule(drawAccount, location));
     }
