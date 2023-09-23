@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 import { Location } from "../../../models/location.model";
 
-export function nonExistingValidator(existingLocations: Location[]): ValidatorFn {
+export function nonExistingValidator(existingLocations: Location[], original: Location): ValidatorFn {
   return (control:AbstractControl) : ValidationErrors | null => {
     const value = control.value;
 
@@ -12,7 +12,9 @@ export function nonExistingValidator(existingLocations: Location[]): ValidatorFn
       return null;
     }
 
-    const exists = existingLocations.find(l => l.name?.toLowerCase() === value.toLowerCase());
+    const exists = existingLocations.find(
+      l => l.name?.toLowerCase() === value.toLowerCase() && l.id != (original ? original.id : -1)
+    );
 
     return exists ? {exists:exists.name}: null;
   }
@@ -25,7 +27,7 @@ export function nonExistingValidator(existingLocations: Location[]): ValidatorFn
 })
 export class LocationDialogComponent implements  OnInit {
   nameControl = new FormControl('', {
-    validators: [Validators.required, nonExistingValidator(this.data.existingLocations)],
+    validators: [Validators.required, nonExistingValidator(this.data.existingLocations, this.data.location)],
     updateOn: 'change'
   });
 
