@@ -1,5 +1,6 @@
 package net.getzoyan.receipts.controllers;
 
+import net.getzoyan.receipts.enums.DrawAccountSortOrder;
 import net.getzoyan.receipts.exceptions.NotFoundException;
 import net.getzoyan.receipts.models.DrawAccount;
 import net.getzoyan.receipts.repositories.DrawAccountRepository;
@@ -18,7 +19,22 @@ public class DrawAccountsController {
 
     @GetMapping("/draw-accounts")
     public List<DrawAccount> getAll() {
-        return repository.findAll();
+        return getAll(DrawAccountSortOrder.ALPHABETICAL);
+    }
+
+    @GetMapping("/draw-accounts/{param}")
+    public List<DrawAccount> getAll(@PathVariable DrawAccountSortOrder param) {
+        switch (param) {
+            case MOST_USED -> {
+                return repository.findAllByMostUsed();
+            }
+            case ALPHABETICAL -> {
+                return repository.findAllByOrderByNameAsc();
+            }
+            default -> {
+                return repository.findAll();
+            }
+        }
     }
 
     @PostMapping("/draw-account")

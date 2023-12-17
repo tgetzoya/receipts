@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static net.getzoyan.receipts.repositories.ScheduleRepository.Specs.byDate;
+import static net.getzoyan.receipts.repositories.ScheduleRepository.Specs.byDue;
 
 @Component
 public class ScheduledExecutor {
@@ -37,45 +37,60 @@ public class ScheduledExecutor {
 //    @Scheduled(fixedRate = 5000)
     @Scheduled(cron = "0 0 1 * * *")
     public void execute() {
-        scheduleRepository.findAll(byDate(LocalDate.now())).stream().forEach(task -> {
+        scheduleRepository.findAll(byDue()).forEach(task -> {
             logger.info("Executing task {}", task.getId());
 
-            Receipt newReceipt = new Receipt();
-            newReceipt.setDrawAccount(task.getDrawAccount());
-            newReceipt.setSubtotal(task.getSubtotal());
-            newReceipt.setDate(LocalDate.now());
-            newReceipt.setDonation(task.getDonation());
-            newReceipt.setSalesTax(task.getSalesTax());
-            newReceipt.setLocation(task.getLocation());
+            LocalDate date = task.getNextDate();
 
-            logger.info("Saving new receipt.");
-            newReceipt = receiptRepository.save(newReceipt);
+            do {
+                Receipt newReceipt = new Receipt();
+                newReceipt.setDrawAccount(task.getDrawAccount());
+                newReceipt.setSubtotal(task.getSubtotal());
+                newReceipt.setDate(date);
+                newReceipt.setDonation(task.getDonation());
+                newReceipt.setSalesTax(task.getSalesTax());
+                newReceipt.setLocation(task.getLocation());
 
-            Note newNote = new Note();
-            newNote.setNote("Created by scheduled task #" + task.getId());
-            newNote.setReceiptId(newReceipt.getId());
-            noteRepository.save(newNote);
+                logger.info("Saving new receipt.");
+                newReceipt = receiptRepository.save(newReceipt);
+
+                Note newNote = new Note();
+                newNote.setNote("Created by scheduled task #" + task.getId());
+                newNote.setReceiptId(newReceipt.getId());
+                noteRepository.save(newNote);
+
+                date = calcNextDate(date, task.getInterval());
+            } while (!task.getInterval().equals(ScheduleInterval.NONE) && date.isBefore(LocalDate.now()));
 
             if (task.getInterval().equals(ScheduleInterval.NONE)) {
                 logger.info("Task is non-repeating, removing from scheduled tasks.");
                 scheduleRepository.delete(task);
             } else {
-                switch (task.getInterval()) {
-                    case DAILY -> task.setNextDate(task.getNextDate().plusDays(1));
-                    case WEEKLY -> task.setNextDate(task.getNextDate().plusWeeks(1));
-                    case MONTHLY -> task.setNextDate(task.getNextDate().plusMonths(1));
-                    case ANNUALLY -> task.setNextDate(task.getNextDate().plusYears(1));
-                    default -> {
-                        logger.info("Unknown interval {}", task.getInterval());
-                        task.setNextDate(task.getNextDate().plus(1, ChronoUnit.MILLENNIA));
-                    }
-                }
+                task.setNextDate(date);
 
+                /* Log the actual stored value, in case something is wrong. */
                 logger.info("New task execution date for task: {}", task.getNextDate());
                 scheduleRepository.save(task);
             }
         });
 
         logger.info("Daily task execution finished.");
+    }
+
+    private LocalDate calcNextDate(LocalDate date, ScheduleInterval interval) {
+        LocalDate newDate;
+
+        switch (interval) {
+            case DAILY -> newDate = date.plusDays(1);
+            case WEEKLY -> newDate = date.plusWeeks(1);
+            case MONTHLY -> newDate = date.plusMonths(1);
+            case ANNUALLY -> newDate = date.plusYears(1);
+            default -> {
+                logger.info("Unknown interval {}", interval);
+                newDate = date.plus(1, ChronoUnit.MILLENNIA);
+            }
+        }
+
+        return newDate;
     }
 }

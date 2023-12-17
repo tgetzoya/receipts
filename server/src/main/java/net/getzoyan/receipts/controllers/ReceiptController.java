@@ -62,6 +62,7 @@ public class ReceiptController {
     public Receipt updateReceipt(@RequestBody Receipt receipt, @PathVariable Long id) {
         return repository.findById(id)
                 .map(rec -> {
+                    rec.setDate(receipt.getDate());
                     rec.setDonation(receipt.getDonation());
                     rec.setDrawAccount(receipt.getDrawAccount());
                     rec.setLocation(receipt.getLocation());

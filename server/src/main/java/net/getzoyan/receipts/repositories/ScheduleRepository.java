@@ -11,8 +11,8 @@ import java.time.LocalDate;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSpecificationExecutor<Schedule> {
     interface Specs {
-        static Specification<Schedule> byDate(LocalDate nextDate) {
-            return (root, query, builder) -> builder.equal(root.get(ScheduledTask_.NEXT_DATE), nextDate);
+        static Specification<Schedule> byDue() {
+            return (root, query, builder) -> builder.lessThanOrEqualTo(root.get(ScheduledTask_.NEXT_DATE), LocalDate.now());
         }
 
         static Specification<Schedule> byLocation(Location location) {
