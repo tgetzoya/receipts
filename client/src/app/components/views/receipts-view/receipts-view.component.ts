@@ -38,8 +38,10 @@ export class ReceiptsViewComponent implements AfterViewInit {
 
   expandedRow?: Receipt | null;
   notes?: Note[] | null;
+  recordYears: string[] = [];
 
   filterControl = new FormControl('');
+  yearControl = new FormControl();
 
   subtotalTotal: number = 0;
   salesTaxTotal: number = 0;
@@ -69,8 +71,24 @@ export class ReceiptsViewComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.receiptsService.getReceipts().subscribe(resp => {
-      this.dataSource.data = resp;
+    this.yearControl.valueChanges.subscribe((year) => {
+      localStorage.setItem("receiptYear", year);
+      this.updateTable(year);
+    });
+
+    this.receiptsService.getReceiptYears().subscribe( resp => {
+      if (resp) {
+        resp.forEach(year => this.recordYears.push(year.toString()));
+      } else {
+        this.recordYears.push(new Date().getFullYear().toString());
+      }
+
+      /* If the stored value is in _both_ the localstorage and there are receipts to display. */
+      if ("receiptYear" in localStorage && "receiptYear" in this.recordYears) {
+        this.yearControl.setValue(localStorage.getItem("receiptYear"));
+      } else {
+        this.yearControl.setValue(this.recordYears[0]);
+      }
     });
 
     this.dataSource.sort = this.sort;
@@ -85,6 +103,12 @@ export class ReceiptsViewComponent implements AfterViewInit {
         data.drawAccount?.name?.toLowerCase().includes(filter.toLowerCase())
       ));
     };
+  }
+
+  updateTable(year: string) {
+    this.receiptsService.getReceipts(year).subscribe(resp => {
+      this.dataSource.data = resp;
+    });
   }
 
   public filterTable(): void {

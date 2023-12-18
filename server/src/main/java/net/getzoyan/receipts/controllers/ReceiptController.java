@@ -53,6 +53,11 @@ public class ReceiptController {
         return repository.findAll(byDrawAccount(drawAccount));
     }
 
+    @GetMapping("/receipts/years")
+    public List<Integer> getReceiptYears() {
+        return repository.findAllReceiptYears();
+    }
+
     @PostMapping("/receipt")
     public Receipt newReceipt(@RequestBody Receipt receipt) {
         return repository.save(receipt);

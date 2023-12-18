@@ -5,11 +5,16 @@ import net.getzoyan.receipts.models.meta.Receipt_;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 public interface ReceiptRepository extends JpaRepository<Receipt, Long>, JpaSpecificationExecutor<Receipt> {
+    @Query(value = "SELECT YEAR(date) AS year FROM receipts.receipts GROUP BY year ORDER BY year DESC", nativeQuery = true)
+    List<Integer> findAllReceiptYears();
+
     interface Specs {
         static Specification<Receipt> byId(Long id) {
             return (root, query, builder) -> builder.equal(root.get(Receipt_.ID), id);

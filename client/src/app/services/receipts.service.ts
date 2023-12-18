@@ -19,9 +19,15 @@ export class ReceiptsService {
 
   constructor(private http: HttpClient) { }
 
-  getReceipts(): Observable<Receipt[]> {
+  getReceiptYears(): Observable<number[]> {
     return this.http
-      .get<Receipt[]>(environment.baseURL + '/receipts', this.httpOptions)
+      .get<number[]>(environment.baseURL + '/receipts/years', this.httpOptions)
+      .pipe(retry(1), catchError(this.handleError));
+  }
+
+  getReceipts(year: string): Observable<Receipt[]> {
+    return this.http
+      .get<Receipt[]>(environment.baseURL + '/receipts/' + year, this.httpOptions)
       .pipe(retry(1), catchError(this.handleError));
   }
 
