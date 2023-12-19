@@ -6,6 +6,7 @@ import { catchError, retry } from "rxjs/operators";
 import { environment } from "../../environment/environment";
 
 import { DrawAccount } from "../models/draw-account.model";
+import {DrawAccountSortOrder} from "../enums/draw-account-sort-order";
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +32,9 @@ export class DrawAccountsService {
     }
   }
 
-  getDrawAccounts(): Observable<DrawAccount[]> {
+  getDrawAccounts(order?: DrawAccountSortOrder | undefined): Observable<DrawAccount[]> {
     return this.http
-      .get<DrawAccount[]>(environment.baseURL + '/draw-accounts')
+      .get<DrawAccount[]>(environment.baseURL + '/draw-accounts' + (order ? '/' + order : ''))
       .pipe(retry(1), catchError(this.handleError));
   }
 

@@ -1,24 +1,24 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { FormControl } from "@angular/forms";
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {FormControl} from "@angular/forms";
 
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from "@angular/material/paginator";
-import { MatSort } from "@angular/material/sort";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatTableDataSource } from "@angular/material/table";
+import {MatDialog} from '@angular/material/dialog';
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatTableDataSource} from "@angular/material/table";
 
-import { DeleteReceiptDialogComponent } from "../../dialogs/delete-receipt-dialog/delete-receipt-dialog.component";
-import { ReceiptDialogComponent } from "../../dialogs/receipt-dialog/receipt-dialog.component";
+import {DeleteReceiptDialogComponent} from "../../dialogs/delete-receipt-dialog/delete-receipt-dialog.component";
+import {ReceiptDialogComponent} from "../../dialogs/receipt-dialog/receipt-dialog.component";
 
-import { Note } from "../../../models/note.model";
-import { Receipt } from "../../../models/receipt.model";
+import {Note} from "../../../models/note.model";
+import {Receipt} from "../../../models/receipt.model";
 
-import { DrawAccountsService } from "../../../services/draw-accounts.service";
-import { LocationsService } from "../../../services/locations.service";
-import { NotesService } from "../../../services/notes.service";
-import { ReceiptsService } from "../../../services/receipts.service";
-import { ScheduleService } from "../../../services/schedule.service";
+import {DrawAccountsService} from "../../../services/draw-accounts.service";
+import {LocationsService} from "../../../services/locations.service";
+import {NotesService} from "../../../services/notes.service";
+import {ReceiptsService} from "../../../services/receipts.service";
+import {ScheduleService} from "../../../services/schedule.service";
 
 @Component({
   selector: 'app-receipts-view',
@@ -68,7 +68,8 @@ export class ReceiptsViewComponent implements AfterViewInit {
     public receiptsService: ReceiptsService,
     public scheduleService: ScheduleService,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+  }
 
   ngAfterViewInit() {
     this.yearControl.valueChanges.subscribe((year) => {
@@ -76,7 +77,7 @@ export class ReceiptsViewComponent implements AfterViewInit {
       this.updateTable(year);
     });
 
-    this.receiptsService.getReceiptYears().subscribe( resp => {
+    this.receiptsService.getReceiptYears().subscribe(resp => {
       if (resp) {
         resp.forEach(year => this.recordYears.push(year.toString()));
       } else {
@@ -148,79 +149,17 @@ export class ReceiptsViewComponent implements AfterViewInit {
       width: '650px'
     });
 
-    dialogRef.afterClosed().subscribe((dialogResponse: any) => {
-      if (dialogResponse) {
-        let receipt = dialogResponse.receipt;
+    dialogRef.afterClosed().subscribe((receipt: Receipt) => {
+      if (receipt) {
+        let idx = this.dataSource.data.findIndex((r: Receipt) => r.id == receipt.id);
 
-        if (!receipt.location?.id) {
-          this.createNewLocation(receipt);
-        } else if (!receipt.drawAccount?.id) {
-          this.createNewDrawAccount(receipt);
+        if (idx >= 0) {
+          this.dataSource.data[idx] = receipt;
         } else {
-          this.createOrUpdateReceipt(receipt);
+          this.dataSource.data.push(receipt);
         }
 
-        if (dialogResponse.schedule) {
-          if (dialogResponse.schedule.interval === 'NONE' && dialogResponse.schedule.id) {
-            this.scheduleService.deleteSchedule(dialogResponse.schedule.id);
-          } else {
-            this.scheduleService.createSchedule(dialogResponse.schedule).subscribe(resp => {
-              if (resp) {
-                this.snackBar.open("Schedule successfully created.");
-              } else {
-                this.snackBar.open("Schedule could not be created.");
-              }
-            });
-          }
-        }
-      }
-    });
-  }
-
-  private createNewLocation(receipt: Receipt): void {
-    this.locationService.createOrUpdateLocation(receipt.location!).subscribe(resp => {
-      if (resp) {
-        receipt.location = resp;
-
-        if (!receipt.drawAccount?.id) {
-          this.createNewDrawAccount(receipt);
-        } else {
-          this.createOrUpdateReceipt(receipt);
-        }
-      }
-    });
-  }
-
-  private createNewDrawAccount(receipt: Receipt): void {
-    this.drawAccountService.createOrUpdateDrawAccount(receipt.drawAccount!).subscribe(resp => {
-      if (resp) {
-        receipt.drawAccount = resp;
-        this.createOrUpdateReceipt(receipt);
-      }
-    });
-  }
-
-  private createOrUpdateReceipt(receipt: Receipt): void {
-    this.receiptsService.createOrUpdateReceipt(receipt).subscribe(resp => {
-      if (resp) {
-        /* If it has an id here, it already exists. */
-        if (receipt.id) {
-          /* receipt above will not update the row, so this has to happen. */
-          let updatedReceipt = this.dataSource.data.find((r: Receipt) => r.id == receipt.id);
-
-          if (updatedReceipt) {
-            updatedReceipt.date = resp.date;
-            updatedReceipt.donation = resp.donation;
-            updatedReceipt.drawAccount = resp.drawAccount;
-            updatedReceipt.location = resp.location;
-            updatedReceipt.salesTax = resp.salesTax;
-            updatedReceipt.subtotal = resp.subtotal;
-          }
-        } else {
-          this.dataSource.data.push(resp);
-        }
-
-        this.dataSource._updateChangeSubscription();
+        this.dataSource.paginator = this.paginator;
       }
     });
   }

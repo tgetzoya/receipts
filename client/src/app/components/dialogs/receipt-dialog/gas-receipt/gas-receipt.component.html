@@ -1,0 +1,104 @@
+<mat-grid-list cols="2" rowHeight="100px">
+  <mat-grid-tile>
+    <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Location</mat-label>
+      <input
+        type="text"
+        placeholder="Pick one"
+        matInput
+        [formControl]="locationControl"
+        [matAutocomplete]="locationAuto"
+      >
+      <mat-error *ngIf="locationControl.invalid && locationControl.errors!['notExists']">
+        Location will be created.
+      </mat-error>
+      <mat-autocomplete autoActiveFirstOption #locationAuto="matAutocomplete">
+        <mat-option *ngFor="let location of filteredLocationOptions | async" [value]="location.name">
+          {{location.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Gallons</mat-label>
+      <input matInput [formControl]="gallonsControl" placeholder="12.24">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Price Per Gallon</mat-label>
+      <input matInput [formControl]="pricePerGallonControl" placeholder="3.49" (blur)="formatInputForCurrency(pricePerGallonControl)">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Federal Tax</mat-label>
+      <input matInput [formControl]="federalTaxControl" placeholder=".18" (blur)="formatInputForCurrency(federalTaxControl)">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>State Tax</mat-label>
+      <input matInput [formControl]="stateTaxControl" placeholder=".20" (blur)="formatInputForCurrency(stateTaxControl)">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Draw Account</mat-label>
+      <input
+        type="text"
+        placeholder="Pick one"
+        matInput
+        [formControl]="drawAccountControl"
+        [matAutocomplete]="accountAuto"
+      >
+      <mat-error *ngIf="drawAccountControl.invalid && drawAccountControl.errors!['notExists']">
+        Draw Account will be created.
+      </mat-error>
+      <mat-autocomplete autoActiveFirstOption #accountAuto="matAutocomplete">
+        <mat-option *ngFor="let account of filteredDrawAccountOptions | async" [value]="account.name">
+          {{account.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="2"><hr class="full-width" /></mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>Federal Tax Amount</mat-label>
+      <input matInput [formControl]="federalTaxAmountControl">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-form-field class="item">
+      <mat-label>State Tax Amount</mat-label>
+      <input matInput [formControl]="stateTaxAmountControl">
+    </mat-form-field>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="actions-container">
+      <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
+      <button mat-flat-button color="primary" (click)="save()">
+        {{existingReceipt ? 'Update' : 'Save'}}
+      </button>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile *ngIf="duplicates > 0">
+    <div class="item show-existing-div">
+      There exist {{duplicates}} receipt
+      <span *ngIf="duplicates > 1">s</span>
+      for {{locationControl.value}} on {{dateControl.value | date: 'yyyy/MM/dd'}}.
+      Please confirm if you have already entered this receipt.
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

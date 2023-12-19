@@ -1,19 +1,20 @@
-.header {
-  display: flex;
-  justify-content: center;
-
-}
-
-.item {
-  width: 250px;
-}
-
-.show-existing-div {
-  color: firebrick;
-}
-
-.actions-container{
-  width: 250px;
-  display: flex;
+mat-toolbar {
   justify-content: space-between;
 }
+
+.receipt-type-select {
+  width: 200px;
+}
+
+/*.header {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*}*/
+
+/*.receipt-type-select {*/
+/*  background-color: white;*/
+/*}*/
+
+/*.item {*/
+/*  width: 250px;*/
+/*}*/

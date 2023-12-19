@@ -1,0 +1,18 @@
+.actions-container{
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.show-existing-div {
+  color: firebrick;
+}
+
+.item {
+  width: 250px;
+}
+
+.full-width {
+  width: 95%;
+}
+
